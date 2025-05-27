@@ -65,6 +65,13 @@ abstract class BaseController extends Controller
     }
 
 
+    public function loadDashboardView($viewName = "",$pageInfo = null, $headerInfo = [],  $footerInfo = []){
+        //echo view('menu', $headerInfo);
+        echo view('dashboard/'.$viewName, $pageInfo);
+        //echo view('footer', $footerInfo);
+    }
+
+
     public function loadAdminView($viewName = "",$pageInfo = null, $headerInfo = [],  $footerInfo = []){
         echo view('adminpanel/includes/header', $headerInfo);
         echo view('adminpanel/'.$viewName, $pageInfo);
