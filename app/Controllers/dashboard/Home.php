@@ -8,4 +8,9 @@ class Home extends BaseController{
         $data=[];
         return $this->loadDashboardView('index',$data);
     }
+
+    public function add_skill(){
+        $data=[];
+        return $this->loadDashboardView('addskill',$data);
+    }
 }

@@ -66,9 +66,9 @@ abstract class BaseController extends Controller
 
 
     public function loadDashboardView($viewName = "",$pageInfo = null, $headerInfo = [],  $footerInfo = []){
-        //echo view('menu', $headerInfo);
+        echo view('dashboard/header', $headerInfo);
         echo view('dashboard/'.$viewName, $pageInfo);
-        //echo view('footer', $footerInfo);
+        echo view('dashboard/footer', $footerInfo);
     }
 
 

@@ -11,3 +11,4 @@ $routes->get('/login', 'Home::login');
 
 
 $routes->get('/dashboard', 'Dashboard\Home::index');
+$routes->get('/addskill', 'Dashboard\Home::add_skill');
