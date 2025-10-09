@@ -1256,9 +1256,9 @@ h6 {
 .sidebar-nav {
   padding: 1rem 0;
 }
-.nav-item {
+/* .nav-item {
   margin: 0.25rem 1rem;
-}
+} */
 
 .nav-link2:hover, .nav-link2.active {
   background: rgba(255, 255, 255, 0.1);
