@@ -59,9 +59,9 @@ abstract class BaseController extends Controller
     protected $global = [];
 
     public function loadView($viewName = "",$pageInfo = null, $headerInfo = [],  $footerInfo = []){
-        echo view('menu', $headerInfo);
+        echo view('includes/header', $headerInfo);
         echo view($viewName, $pageInfo);
-        echo view('footer', $footerInfo);
+        echo view('includes/footer', $footerInfo);
     }
 
 
@@ -83,7 +83,7 @@ abstract class BaseController extends Controller
         $this->session = session();
         $isLoggedIn = $this->session->get('isLoggedIn');
         if (! isset ( $isLoggedIn ) || $isLoggedIn != TRUE) {
-            redirect()->to(base_url('admin/login'))->with('error', 'Please log in first.')->send();
+            redirect()->to(base_url('/login'))->with('error', 'Please log in first.')->send();
             exit;
         }
     }

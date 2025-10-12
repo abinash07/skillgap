@@ -28,4 +28,14 @@ class Home extends BaseController{
         $data=[];
         return $this->loadDashboardView('myaccount',$data);
     }
+
+    public function profile(){
+        $data=[];
+        return $this->loadDashboardView('profile',$data);
+    }
+
+    public function home(){
+        $data=[];
+        return $this->loadDashboardView('home',$data);
+    }
 }
