@@ -3,69 +3,39 @@
         <div class="container">
             <div class="row g-4">
                 <div class="col-md-8">
-                    
                     <div class="card mb-4 shadow-sm">
                         <div class="card-body">
-                            <div class="mb-3">
-                                <label for="skillSelect" class="form-label fw-semibold">
-                                    Select Skill <span class="text-danger">*</span>
-                                </label>
-                                <select id="skillSelect" class="form-select">
-                                    <option value="">-- Choose a skill --</option>
-                                    <option value="webdev">Web Development</option>
-                                    <option value="design">UI/UX Design</option>
-                                    <option value="marketing">Digital Marketing</option>
-                                    <option value="python">Python Programming</option>
-                                    <option value="writing">Creative Writing</option>
-                                </select>
-                            </div>
-                            <textarea class="form-control mb-3" rows="3" placeholder="Share your thoughts, skills, or updates..."></textarea>
-                            <div class="text-end">
-                                <button class="btn btn-primary btn-sm px-4"><i class="bi bi-send me-1"></i> Post</button>
-                            </div>
-                        </div>
-                    </div>
+                            <form id="postForm">
+                                <div class="mb-3">
+                                    <label for="skillSelect" class="form-label fw-semibold">
+                                        Select Skill <span class="text-danger">*</span>
+                                    </label>
+                                    <select id="skillSelect" name="skillid" id="skillid" class="form-select" required>
+                                        <option value="">Select Skill</option>
+                                        <?php foreach($skill as $k => $v){ ?>
+                                            <option value="<?= $v->id; ?>"><?= $v->name; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                    <div class="invalid-feedback">Please select a skill.</div>
+                                </div>
 
-                    <!-- Example Post -->
-                    <div class="card mb-3 shadow-sm">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-2">
-                                <img src="<?= base_url(); ?>assets/img/testimonials-2.jpg" class="rounded-circle me-2" alt="User" style="height: 45px;">
-                                <div>
-                                    <strong>John Doe</strong><br>
-                                    <small class="text-muted">2 hours ago</small>
+                                <div class="mb-3">
+                                    <textarea name="content" id="content" class="form-control" rows="3" placeholder="Share your thoughts, skills, or updates..." required></textarea>
+                                    <div class="invalid-feedback">Please enter some text.</div>
                                 </div>
-                            </div>
-                            <p class="mb-2">🚀 Just finished building my first API using FastAPI! It was super fast and fun to learn.</p>
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="d-flex gap-3">
-                                    <a href="#" class="text-muted text-decoration-none"><i class="bi bi-heart"></i> 24</a>
-                                    <a href="#" class="text-muted text-decoration-none"><i class="bi bi-chat"></i> 5</a>
-                                </div>
-                                <small class="text-muted"><i class="bi bi-tag"></i> FastAPI</small>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="card mb-3 shadow-sm">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-2">
-                                <img src="<?= base_url(); ?>assets/img/testimonials-2.jpg" class="rounded-circle me-2" alt="User" style="height: 45px;">
-                                <div>
-                                    <strong>Priya Sharma</strong><br>
-                                    <small class="text-muted">1 day ago</small>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary btn-sm px-4" id="postBtn">
+                                        <span class="button-text"><i class="bi bi-send me-1"></i> Post</span>
+                                        <span class="spinner-border spinner-border-sm ms-2 d-none" role="status"></span>
+                                    </button>
                                 </div>
-                            </div>
-                            <p class="mb-2">💡 Learning Angular components today — this framework is so powerful once you get the hang of it!</p>
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="d-flex gap-3">
-                                    <a href="#" class="text-muted text-decoration-none"><i class="bi bi-heart"></i> 18</a>
-                                    <a href="#" class="text-muted text-decoration-none"><i class="bi bi-chat"></i> 3</a>
-                                </div>
-                                <small class="text-muted"><i class="bi bi-tag"></i> Angular</small>
-                            </div>
+                            </form>
                         </div>
                     </div>
+                    <div id="postAlert" class="mt-2"></div>
+
+                    <div id="posts"></div>
                 </div>
 
                 <!-- Right side: Tags / Skills -->
@@ -116,3 +86,149 @@
         </div>
     </section>
 </main>
+
+<script>
+$(document).ready(function () {
+    $("#postForm").on("submit", function (e) {
+        e.preventDefault();
+        var formdata = new FormData(this);
+
+        const form = this;
+        form.classList.add('was-validated');
+
+        if (!form.checkValidity()) return;
+
+        const $btn = $("#postBtn");
+        const $spinner = $btn.find(".spinner-border");
+        const $text = $btn.find(".button-text");
+        const $alert = $("#postAlert");
+
+        // Disable button & show loader
+        $btn.prop("disabled", true);
+        $spinner.removeClass("d-none");
+        $text.text("Posting...");
+
+        $.ajax({
+            url: "<?= base_url('/insertpost'); ?>",
+            method: "POST",
+            enctype: "multipart/form-data",
+            data: formdata,
+            dataType: 'JSON',
+            processData: false,
+            contentType: false,
+            success: function(res) {
+                if (res.status) {
+                    $alert.html(`
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle me-1"></i> ${res.message || 'Post added successfully!'}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `);
+                    form.reset();
+                    form.classList.remove('was-validated');
+                } else {
+                    $alert.html(`
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-1"></i> ${res.message || 'Something went wrong!'}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `);
+                }
+            },
+            error: function() {
+                $alert.html(`
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-octagon me-1"></i> Server error! Please try again later.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `);
+            },
+            complete: function() {
+                $btn.prop("disabled", false);
+                $spinner.addClass("d-none");
+                $text.html('<i class="bi bi-send me-1"></i> Post');
+            }
+        });
+    });
+});
+
+
+getPost();
+function getPost(){
+    $.ajax({
+        url: "<?php echo base_url('getpost'); ?>",
+        method: "POST",
+        data: {},
+        dataType: 'JSON',         
+        beforeSend: function () {
+            for (let i = 0; i < 10; i++) {
+                $('#posts').append(
+                    `<div class="card mb-3 shadow-sm" id="skillCardSkeleton">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                            <span class="placeholder rounded-circle me-2" style="height:45px;width:45px;"></span>
+                            <div class="w-50">
+                                <p class="placeholder-glow mb-1">
+                                <span class="placeholder col-6"></span>
+                                </p>
+                                <p class="placeholder-glow mb-0">
+                                <span class="placeholder col-4"></span>
+                                </p>
+                            </div>
+                            </div>
+
+                            <p class="placeholder-glow mb-2">
+                            <span class="placeholder col-12"></span>
+                            <span class="placeholder col-10"></span>
+                            <span class="placeholder col-8"></span>
+                            </p>
+
+                            <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-3">
+                                <span class="placeholder col-1"></span>
+                                <span class="placeholder col-1"></span>
+                            </div>
+                            <span class="placeholder col-2"></span>
+                            </div>
+                        </div>
+                    </div>`
+                );
+            }
+        },
+        success: function(data){
+            if(data.status == true){
+                $.each(data.result, function (key, val) {
+                    $('#posts').html('');
+                    $('#posts').append(
+                        `<div class="card mb-3 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-2">
+                                    <img src="<?= base_url(); ?>assets/img/testimonials-2.jpg" class="rounded-circle me-2" alt="User" style="height: 45px;">
+                                    <div>
+                                        <strong>John Doe</strong><br>
+                                        <small class="text-muted">2 hours ago</small>
+                                    </div>
+                                </div>
+                                <p class="mb-2">🚀 Just finished building my first API using FastAPI! It was super fast and fun to learn.</p>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex gap-3">
+                                        <a href="#" class="text-muted text-decoration-none"><i class="bi bi-heart"></i> 24</a>
+                                        <a href="#" class="text-muted text-decoration-none"><i class="bi bi-chat"></i> 5</a>
+                                    </div>
+                                    <small class="text-muted"><i class="bi bi-tag"></i> FastAPI</small>
+                                </div>
+                            </div>
+                        </div>`
+                    );
+                })
+            }
+            if(data.status == false){
+
+            }
+        },
+        complete: function () {
+
+        }
+    });
+}
+</script>

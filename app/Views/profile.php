@@ -1,8 +1,7 @@
 <main id="main" class="main">
-    <section class="section profile">
+    <section class="section profile py-4">
         <div class="container">
             <div class="row">
-
                 <div class="col-md-3 text-center mb-4 mb-md-0">
                     <div class="profile bg-white" style="padding: 30px 20px;">
                         <img 
@@ -63,12 +62,7 @@
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-skill" aria-selected="true" role="tab">My Skills</button>
                                 </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit" aria-selected="false" tabindex="-1" role="tab">Edit Profile</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password" aria-selected="false" tabindex="-1" role="tab">Change Password</button>
-                                </li>
+                                
                             </ul>
                             <div class="tab-content pt-2">
                                 <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
@@ -174,132 +168,12 @@
                                     </div>
                                 </div>
 
-                                <div class="tab-pane fade profile-edit pt-3" id="profile-edit" role="tabpanel">
-                                    <form>
-                                        <div class="row mb-3">
-                                            <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
-                                            <div class="col-md-8 col-lg-9">
-                                                <img src="<?= base_url(); ?>assets/img/testimonials-2.jpg" alt="Profile">
-                                                <div class="pt-2">
-                                                    <a href="#" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
-                                            <div class="col-md-8 col-lg-9">
-                                                <input name="fullName" type="text" class="form-control" id="fullName" value="Kevin Anderson">
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <label for="about" class="col-md-4 col-lg-3 col-form-label">Bio</label>
-                                            <div class="col-md-8 col-lg-9">
-                                                <textarea name="about" class="form-control" id="about" style="height: 100px">Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde.</textarea>
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <label for="company" class="col-md-4 col-lg-3 col-form-label">Occupation</label>
-                                            <div class="col-md-8 col-lg-9">
-                                                <input name="company" type="text" class="form-control" id="company" value="Lueilwitz, Wisoky and Leuschke">
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <label for="Job" class="col-md-4 col-lg-3 col-form-label">Education</label>
-                                            <div class="col-md-8 col-lg-9">
-                                                <input name="job" type="text" class="form-control" id="Job" value="Web Designer">
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
-                                            <div class="col-md-8 col-lg-9">
-                                                <input type="email" class="form-control" name="email" id="Email" value="k.anderson@example.com">
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <label for="Twitter" class="col-md-4 col-lg-3 col-form-label">Links</label>
-                                            <div class="col-md-8 col-lg-9">
-                                                <div class="row mb-3 educationBox">
-                                                    <div class="col-md-10">
-                                                        <input type="text" class="form-control" name="twitter" id="Twitter">
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <a href="javascript:void(0)" id="educationAddMore" class="btn btn-primary w-100">Add</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="text-center">
-                                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                                        </div>
-                                    </form>
-                                </div>
-
-                                <div class="tab-pane fade pt-3" id="profile-change-password" role="tabpanel">
-                                    <form>
-                                        <div class="row mb-3">
-                                            <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
-                                            <div class="col-md-8 col-lg-9">
-                                                <input name="password" type="password" class="form-control" id="currentPassword">
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
-                                            <div class="col-md-8 col-lg-9">
-                                                <input name="newpassword" type="password" class="form-control" id="newPassword">
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
-                                            <div class="col-md-8 col-lg-9">
-                                                <input name="renewpassword" type="password" class="form-control" id="renewPassword">
-                                            </div>                          
-                                        </div>
-
-                                        <div class="text-center">
-                                            <button type="submit" class="btn btn-primary">Change Password</button>
-                                        </div>
-                                    </form>
-
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 </main>
-
-<script>
-    $('#educationAddMore').on('click',function(e){
-        e.preventDefault();
-        var educationEntry = $(
-            
-            '<div class="col-md-12 education-box pt-2">' +
-                '<div class="row">'+
-                    '<div class="col-md-10">'+
-                        '<input name="twitter" type="text" class="form-control" id="Twitter" value="https://twitter.com/#">'+
-                    '</div>'+
-                    '<div class="col-md-2">'+
-                        '<a href="javascript:void(0)" class="btn btn-danger w-100 deleteEducation"><i class="bi bi-x-lg"></i></a>'+
-                    '</div>'+
-                '</div>'+
-            '</div>'
-        );
-        $('.educationBox').append(educationEntry);
-    });
-
-    $('.educationBox').on('click', '.deleteEducation', function() {
-        $(this).closest('.education-box').remove();
-    });
-
-</script>

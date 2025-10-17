@@ -24,10 +24,6 @@ class Home extends BaseController{
         return $this->loadDashboardView('allskills',$data);
     }
 
-    public function myaccount(){
-        $data=[];
-        return $this->loadDashboardView('myaccount',$data);
-    }
 
     public function profile(){
         $data=[];
