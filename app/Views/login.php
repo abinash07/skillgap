@@ -362,25 +362,24 @@ $(document).ready(function () {
 
         // Prepare payload
         const payload = {
-            email: email,
+            username: email,
             password: password
         };
 
         // AJAX call
         $.ajax({
-            url: "<?= base_url('api/login'); ?>", // 🔹 Your API endpoint
+            url: "<?= base_url('loginme'); ?>", // 🔹 Your API endpoint
             type: "POST",
-            data: JSON.stringify(payload),
-            contentType: "application/json",
+            data: {username: email, password: password},
             dataType: "json",
             success: function (response) {
                 if (response.status === true) {
                     // ✅ Login success
-                    alert("Login successful!");
-                    window.location.href = "<?= base_url('myaccount'); ?>"; // redirect
+                    //alert("Login successful!");
+                    window.location.href = "<?= base_url(''); ?>";
                 } else {
                     // ❌ API returned error
-                    alert(response.message || "Invalid credentials");
+                    //alert(response.message || "Invalid credentials");
                 }
             },
             error: function (xhr) {
