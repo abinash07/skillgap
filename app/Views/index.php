@@ -7,9 +7,7 @@
                         <div class="card-body">
                             <form id="postForm">
                                 <div class="mb-3">
-                                    <label for="skillSelect" class="form-label fw-semibold">
-                                        Select Skill <span class="text-danger">*</span>
-                                    </label>
+                                    <label for="skillSelect" class="form-label fw-semibold">Select Skill <span class="text-danger">*</span></label>
                                     <select id="skillSelect" name="skillid" id="skillid" class="form-select" required>
                                         <option value="">Select Skill</option>
                                         <?php foreach($skill as $k => $v){ ?>
@@ -18,12 +16,10 @@
                                     </select>
                                     <div class="invalid-feedback">Please select a skill.</div>
                                 </div>
-
                                 <div class="mb-3">
                                     <textarea name="content" id="content" class="form-control" rows="3" placeholder="Share your thoughts, skills, or updates..." required></textarea>
                                     <div class="invalid-feedback">Please enter some text.</div>
                                 </div>
-
                                 <div class="text-end">
                                     <button type="submit" class="btn btn-primary btn-sm px-4" id="postBtn">
                                         <span class="button-text"><i class="bi bi-send me-1"></i> Post</span>
@@ -34,28 +30,16 @@
                         </div>
                     </div>
                     <div id="postAlert" class="mt-2"></div>
-
                     <div id="posts"></div>
                 </div>
 
-                <!-- Right side: Tags / Skills -->
                 <div class="col-md-4">
                     <div class="card shadow-sm">
                         <div class="card-header bg-white fw-semibold">
                             <i class="bi bi-tags me-1 text-primary"></i> Popular Skills
                         </div>
                         <div class="card-body">
-                            <div class="d-flex flex-wrap gap-2">
-                                <a href="#" class="badge bg-primary-subtle text-primary border border-primary">HTML</a>
-                                <a href="#" class="badge bg-primary-subtle text-primary border border-primary">CSS</a>
-                                <a href="#" class="badge bg-primary-subtle text-primary border border-primary">JavaScript</a>
-                                <a href="#" class="badge bg-primary-subtle text-primary border border-primary">Python</a>
-                                <a href="#" class="badge bg-primary-subtle text-primary border border-primary">FastAPI</a>
-                                <a href="#" class="badge bg-primary-subtle text-primary border border-primary">Angular</a>
-                                <a href="#" class="badge bg-primary-subtle text-primary border border-primary">SQL</a>
-                                <a href="#" class="badge bg-primary-subtle text-primary border border-primary">Docker</a>
-                                <a href="#" class="badge bg-primary-subtle text-primary border border-primary">Machine Learning</a>
-                            </div>
+                            <div class="d-flex flex-wrap gap-2" id="popularSkill"></div>
                         </div>
                     </div>
 
@@ -81,7 +65,48 @@
                             </a>
                         </div>
                     </div>
-                </div>
+
+                    <!-- <div class="card shadow-sm">
+                        <div class="card-header bg-white fw-semibold">
+                            <span class="placeholder col-5 bg-secondary"></span>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex align-items-center">
+                                <span class="placeholder rounded-circle bg-secondary me-2" style="width:45px; height:45px;"></span>
+                                <div class="flex-grow-1">
+                                    <p class="placeholder-glow mb-1">
+                                        <span class="placeholder col-6 bg-secondary"></span>
+                                    </p>
+                                    <p class="placeholder-glow mb-0">
+                                        <span class="placeholder col-4 bg-secondary"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="list-group-item d-flex align-items-center">
+                                <span class="placeholder rounded-circle bg-secondary me-2" style="width:45px; height:45px;"></span>
+                                <div class="flex-grow-1">
+                                    <p class="placeholder-glow mb-1">
+                                        <span class="placeholder col-6 bg-secondary"></span>
+                                    </p>
+                                    <p class="placeholder-glow mb-0">
+                                        <span class="placeholder col-4 bg-secondary"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="list-group-item d-flex align-items-center">
+                                <span class="placeholder rounded-circle bg-secondary me-2" style="width:45px; height:45px;"></span>
+                                <div class="flex-grow-1">
+                                    <p class="placeholder-glow mb-1">
+                                        <span class="placeholder col-6 bg-secondary"></span>
+                                    </p>
+                                    <p class="placeholder-glow mb-0">
+                                        <span class="placeholder col-4 bg-secondary"></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>                
             </div>
         </div>
     </section>
@@ -185,8 +210,8 @@ function getPost(){
 
                             <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex gap-3">
-                                <span class="placeholder col-1"></span>
-                                <span class="placeholder col-1"></span>
+                                <span class="placeholder col-1" style="width: 15px;"></span>
+                                <span class="placeholder col-1" style="width: 15px;"></span>
                             </div>
                             <span class="placeholder col-2"></span>
                             </div>
@@ -219,6 +244,45 @@ function getPost(){
                                 </div>
                             </div>
                         </div>`
+                    );
+                })
+            }
+            if(data.status == false){
+
+            }
+        },
+        complete: function () {
+
+        }
+    });
+}
+
+
+getPopularSkill();
+function getPopularSkill(){
+    $.ajax({
+        url: "<?php echo base_url('getpopularskill'); ?>",
+        method: "POST",
+        data: {},
+        dataType: 'JSON',         
+        beforeSend: function () {
+            $('#popularSkill').append(
+                `<span class="placeholder bg-secondary col-3" style="height: 20px; width: 50px; border-radius: 20px;"></span>
+                <span class="placeholder bg-secondary col-3" style="height: 20px; width: 150px; border-radius: 20px;"></span>
+                <span class="placeholder bg-secondary col-3" style="height: 20px; border-radius: 20px;"></span>
+                <span class="placeholder bg-secondary col-3" style="height: 20px; border-radius: 20px;"></span>
+                <span class="placeholder bg-secondary col-3" style="height: 20px; border-radius: 20px;"></span>
+                <span class="placeholder bg-secondary col-3" style="height: 20px; border-radius: 20px;"></span>
+                <span class="placeholder bg-secondary col-3" style="height: 20px; width: 50px; border-radius: 20px;"></span>
+                `
+            );
+        },
+        success: function(data){
+            if(data.status == true){
+                $('#popularSkill').html('');
+                $.each(data.result, function (key, val) {
+                    $('#popularSkill').append(
+                        `<a href="#" class="badge bg-primary-subtle text-primary border border-primary">${val.name}</a>`
                     );
                 })
             }

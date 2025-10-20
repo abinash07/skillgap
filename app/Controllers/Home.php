@@ -3,16 +3,19 @@
 namespace App\Controllers;
 use App\Models\CommonModel;
 use App\Models\HomeModel;
+use App\Models\AuthModel;
 
 class Home extends BaseController{
 
     protected $CommonModel;
     protected $HomeModel;
+    protected $AuthModel;
 
     public function __construct(){
         $this->isLoggedIn();
         $this->CommonModel = new CommonModel();
         $this->HomeModel = new HomeModel();
+        $this->AuthModel = new AuthModel();
     }
 
     public function index(){
@@ -34,9 +37,9 @@ class Home extends BaseController{
         return $this->loadView('myaccount',$data);
     }
 
-    public function profile(){
+    public function profile($username){
         $data=[];
-        $userid = session()->get('userid');
+        $data['username']=$username;
         return $this->loadView('profile',$data);
     }
 
@@ -141,7 +144,6 @@ class Home extends BaseController{
         }
     }
 
-
     public function get_post(){
         //$partnerid = $this->request->getPost('partnerId');
         $userid = session()->get('userid');
@@ -159,4 +161,207 @@ class Home extends BaseController{
             ]);
         }
     }
+
+    public function get_popular_skill(){
+        $result = $this->HomeModel->getPopularSkill();
+        if ($result) {
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'Record found',
+                'result' => $result
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Record not found'
+            ]);
+        }
+    }
+
+    public function update_account(){
+        $session = session();
+        
+        ## ✅ Validation Rules
+        $validationRules = [
+            'name' => 'required|trim',
+            'email'   => 'required|trim',
+            'bio'   => 'required|trim',
+            'occupation' => 'required|trim',
+            'education' => 'required|trim'
+        ];
+
+        ## ✅ Validate Input
+        if (!$this->validate($validationRules)) {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => '*** Please fill the form correctly',
+                'errors'  => $this->validator->getErrors()
+            ]);
+        }
+
+        $userid = session()->get('userid');
+
+        ## ✅ Fetch Data from POST Request
+        $data = [
+            // 'name'       => $this->request->getPost('name'),
+            // 'email'      => $this->request->getPost('email'),
+            'bio'        => $this->request->getPost('bio'),
+            'occupation' => $this->request->getPost('occupation'),
+            'education'  => $this->request->getPost('education'),
+            'link_one'   => $this->request->getPost('link_one'),
+            'link_two'   => $this->request->getPost('link_two'),
+            'link_three' => $this->request->getPost('link_three'),
+            'link_four'  => $this->request->getPost('link_four'),
+        ];
+
+        ## ✅ Handle Image Upload (optional)
+        $old_image = $this->request->getPost('old_image');
+        $base64Image = $this->request->getPost('cropped_image');
+        if ($base64Image) {
+            $imageParts = explode(";base64,", $base64Image);
+            $imageBase64 = base64_decode($imageParts[1]);
+            $fileName = 'profile_' . $userid . '_' . time() . '.jpeg';
+            $uploadPath = FCPATH . 'uploads/profile/';
+            if (!is_dir($uploadPath)) mkdir($uploadPath, 0777, true);
+            file_put_contents($uploadPath . $fileName, $imageBase64);
+            @unlink(FCPATH . 'uploads/profile/' . $old_image);
+            $data['image'] = $fileName;
+        }
+
+
+        ## ✅ Insert into Database
+        $result = $this->CommonModel->updateRecord('userid',$userid,'tbl_about_me',$data);
+        if($result){
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'You have successfully added new skill'
+            ]);
+        }else{
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Something error, Try after sometime!'
+            ]);
+        }
+    }
+
+    public function reset_user_password(){
+        $old_password = $this->request->getPost('old_password');
+        $new_password = $this->request->getPost('new_password');
+        $confirm_password = $this->request->getPost('confirm_password');
+        $userid = session()->get('userid');
+
+        $result = $this->AuthModel->get_users_password($userid);
+        $pass_decode = password_verify($old_password, $result->password);
+
+        // echo '<pre>';
+        // print_r($old_password);
+        // echo '<br>';
+        // print_r($result);
+        // exit;
+
+        if($pass_decode){
+            $pass = password_hash($confirm_password, PASSWORD_BCRYPT);
+            $data = array(
+                'userlink' => $confirm_password,
+                'password' => $pass,
+            );
+            $result2 = $this->CommonModel->updateRecord('userid',$userid,'tbl_user',$data);
+            if($result2){
+                echo json_encode(array('status'=>true, 'message' => 'Password Reset'));
+            }else{
+                echo json_encode(array('status'=>false, 'message' => 'Something error, Try after sometime!!'));
+            }
+        }else{
+            echo json_encode(array('status'=>false, 'message' => 'Old Password is Wrong'));
+        }
+    }
+
+
+    public function get_my_post(){
+        //$partnerid = $this->request->getPost('partnerId');
+        $userid = session()->get('userid');
+        $result = $this->HomeModel->getMyPost($userid);
+        if ($result) {
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'Record found',
+                'result' => $result
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Record not found'
+            ]);
+        }
+    }
+
+    public function get_my_skill(){
+        //$partnerid = $this->request->getPost('partnerId');
+        $userid = session()->get('userid');
+        $result = $this->HomeModel->getMySkill($userid);
+        if ($result) {
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'Record found',
+                'result' => $result
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Record not found'
+            ]);
+        }
+    }
+
+    public function get_user_post(){
+        $username = $this->request->getPost('username');
+        $result = $this->HomeModel->getUserPost($username);
+        if ($result) {
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'Record found',
+                'result' => $result
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Record not found'
+            ]);
+        }
+    }
+
+    public function get_user_skill(){
+        $username = $this->request->getPost('username');
+        $result = $this->HomeModel->getUserSkill($username);
+        if ($result) {
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'Record found',
+                'result' => $result
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Record not found'
+            ]);
+        }
+    }
+
+    public function get_user_data(){
+        $username = $this->request->getPost('username');
+        $result = $this->HomeModel->getUserData($username);
+        if ($result) {
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'Record found',
+                'result' => $result
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Record not found'
+            ]);
+        }
+    }
+
 }
