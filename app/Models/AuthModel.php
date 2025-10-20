@@ -30,4 +30,9 @@ class AuthModel extends Model
             ->where('tu.email', $username)
             ->first();
     }
+
+    public function get_users_password($userid){
+		$query = $this->db->query("SELECT tu.password from tbl_user as tu where tu.userid = '$userid'");
+		return $query->getRow();
+	}
 }
