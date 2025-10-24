@@ -44,6 +44,16 @@ class CommonModel extends Model{
         return $query;
     }
 
+    public function updateRecords(string $columnName, $columnValue, string $columnName2, $columnValue2, string $table, array $data): bool{
+        $db = \Config\Database::connect();
+        $builder = $db->table($table);
+        $builder->where($columnName, $columnValue);
+        $builder->where($columnName2, $columnValue2);
+        $query = $builder->update($data);
+        //echo $db->getLastQuery();exit;
+        return $query;
+    }
+
 
 
     public function row_any_record_where(array $columnArray, string $table, array $where_conditions){

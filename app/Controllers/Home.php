@@ -24,6 +24,11 @@ class Home extends BaseController{
         return $this->loadView('index',$data);
     }
 
+    public function post_details($id){
+        $data=[];
+        $data['id'] = $id;
+        return $this->loadView('postdetails',$data);
+    }
 
     public function add_skill(){
         $data=[];
@@ -34,6 +39,11 @@ class Home extends BaseController{
         $data=[];
         $userid = session()->get('userid');
         $data['account'] = $this->HomeModel->getAccountDetails($userid);
+
+        // echo '<pre>';
+        // print_r($data['account']);
+        // exit;
+
         return $this->loadView('myaccount',$data);
     }
 
@@ -122,7 +132,7 @@ class Home extends BaseController{
         ## ✅ Fetch Data from POST Request
         $data = [
             'userid'            => session()->get('userid'),
-            'skillid'           => $this->request->getPost('skillid'),
+            'skill_slug'           => $this->request->getPost('skillid'),
             'content'           => $this->request->getPost('content'),
             'status'            => 1,
             'created_by'        => session()->get('id'),
@@ -145,14 +155,27 @@ class Home extends BaseController{
     }
 
     public function get_post(){
-        //$partnerid = $this->request->getPost('partnerId');
         $userid = session()->get('userid');
-        $result = $this->HomeModel->getPost();
+        $result = $this->HomeModel->getPost($userid);
+
+        $response = [];
+        foreach($result as $k => $v){
+            $response[$k]['id'] = $v->id;
+            $response[$k]['image'] = $v->image;
+            $response[$k]['name'] = $v->name;
+            $content = strip_tags($v->content);
+            $response[$k]['content'] = substr($content,0,100);
+            $response[$k]['skill'] = $v->skill;
+            $response[$k]['time'] = $this->timeAgo($v->created_on);
+            $response[$k]['love'] = $v->love;
+            $response[$k]['is_loved'] = $v->is_loved;
+        }
+
         if ($result) {
             return $this->response->setJSON([
                 'status'  => true,
                 'message' => 'Record found',
-                'result' => $result
+                'result' => $response
             ]);
         } else {
             return $this->response->setJSON([
@@ -278,14 +301,26 @@ class Home extends BaseController{
 
 
     public function get_my_post(){
-        //$partnerid = $this->request->getPost('partnerId');
         $userid = session()->get('userid');
         $result = $this->HomeModel->getMyPost($userid);
+
+        $response = [];
+        foreach($result as $k => $v){
+            $response[$k]['id'] = $v->id;
+            $response[$k]['image'] = $v->image;
+            $response[$k]['name'] = $v->name;
+            $response[$k]['content'] = $v->content;
+            $response[$k]['skill'] = $v->skill;
+            $response[$k]['time'] = $this->timeAgo($v->created_on);
+            $response[$k]['love'] = $v->love;
+            $response[$k]['is_loved'] = $v->is_liked;
+        }
+
         if ($result) {
             return $this->response->setJSON([
                 'status'  => true,
                 'message' => 'Record found',
-                'result' => $result
+                'result' => $response
             ]);
         } else {
             return $this->response->setJSON([
@@ -313,14 +348,56 @@ class Home extends BaseController{
         }
     }
 
+    public function timeAgo($timestamp) {
+        $timeDifference = time() - $timestamp;
+
+        if ($timeDifference < 1) {
+            return 'Just now';
+        }
+
+        $units = [
+            31536000 => 'year',
+            2592000  => 'month',
+            604800   => 'week',
+            86400    => 'day',
+            3600     => 'hour',
+            60       => 'minute',
+            1        => 'second'
+        ];
+
+        foreach ($units as $seconds => $unit) {
+            if ($timeDifference >= $seconds) {
+                $value = floor($timeDifference / $seconds);
+                return "$value {$unit}" . ($value > 1 ? 's' : '') . ' ago';
+            }
+        }
+
+        return 'Just now';
+    }
+
     public function get_user_post(){
+        $session = session();
+        $userid = session()->get('userid');
         $username = $this->request->getPost('username');
-        $result = $this->HomeModel->getUserPost($username);
+        $result = $this->HomeModel->getUserPost($username,$userid);
+
+        $response = [];
+        foreach($result as $k => $v){
+            $response[$k]['id'] = $v->id;
+            $response[$k]['image'] = $v->image;
+            $response[$k]['name'] = $v->name;
+            $response[$k]['content'] = $v->content;
+            $response[$k]['skill'] = $v->skill;
+            $response[$k]['time'] = $this->timeAgo($v->created_on);
+            $response[$k]['love'] = $v->love;
+            $response[$k]['is_loved'] = $v->is_liked;
+        }
+
         if ($result) {
             return $this->response->setJSON([
                 'status'  => true,
                 'message' => 'Record found',
-                'result' => $result
+                'result' => $response
             ]);
         } else {
             return $this->response->setJSON([
@@ -348,8 +425,10 @@ class Home extends BaseController{
     }
 
     public function get_user_data(){
+        $session = session();
+        $userid = session()->get('userid');
         $username = $this->request->getPost('username');
-        $result = $this->HomeModel->getUserData($username);
+        $result = $this->HomeModel->getUserData($username,$userid);
         if ($result) {
             return $this->response->setJSON([
                 'status'  => true,
@@ -364,4 +443,153 @@ class Home extends BaseController{
         }
     }
 
+    public function insert_love(){
+        $session = session();
+        
+        ## ✅ Validation Rules
+        $validationRules = [
+            'postid'       => 'required|trim',
+        ];
+
+        ## ✅ Validate Input
+        if (!$this->validate($validationRules)) {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => '*** Please fill the form correctly',
+                'errors'  => $this->validator->getErrors()
+            ]);
+        }
+
+        $userid = session()->get('userid');
+        $postid = $this->request->getPost('postid');
+
+        ## ✅ Fetch Data from POST Request
+        $data = [
+            'userid'            => session()->get('userid'),
+            'postid'            => $this->request->getPost('postid'),
+            'love'              => $this->request->getPost('like'),
+            'status'            => 1,
+            'created_by'        => session()->get('id'),
+            'created_on'        => time() + 12600,
+        ];
+
+        $data2 = [
+            'love'              => $this->request->getPost('like'),
+        ];
+
+        $old_record = $this->HomeModel->getLoveData($userid,$postid);
+        if($old_record){
+            $result = $this->CommonModel->updateRecords('userid',$userid,'postid',$postid,'tbl_love',$data2);
+        }else{
+            $result = $this->CommonModel->add_record('tbl_love',$data);
+        }
+        
+        if($result){
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'You have successfully added new post'
+            ]);
+        }else{
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Something error, Try after sometime!'
+            ]);
+        }
+    }
+
+
+    public function insert_follow(){
+        $session = session();
+        
+        ## ✅ Validation Rules
+        $validationRules = [
+            'userid'       => 'required|trim',
+        ];
+
+        ## ✅ Validate Input
+        if (!$this->validate($validationRules)) {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => '*** Please fill the form correctly',
+                'errors'  => $this->validator->getErrors()
+            ]);
+        }
+
+        $follower_id = session()->get('userid');
+        $following_id = $this->request->getPost('userid');
+        $follow = $this->request->getPost('follow');
+
+        ## ✅ Fetch Data from POST Request
+        $data = [
+            'follower_id'       => $follower_id,
+            'following_id'      => $following_id,
+            'follow'            => $follow,
+            'status'            => 1,
+            'created_by'        => session()->get('id'),
+            'created_on'        => time() + 12600,
+        ];
+
+        $data2 = [
+            'follow'              => $follow,
+        ];
+
+        $old_record = $this->HomeModel->getFollowData($follower_id,$following_id);
+        if($old_record){
+            $result = $this->CommonModel->updateRecords('follower_id',$follower_id,'following_id',$following_id,'tbl_follow',$data2);
+        }else{
+            $result = $this->CommonModel->add_record('tbl_follow',$data);
+        }
+        
+        if($result){
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'You have successfully added new post'
+            ]);
+        }else{
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Something error, Try after sometime!'
+            ]);
+        }
+    }
+
+    public function insert_my_follow(){
+        $session = session();
+        
+        $follower_id = session()->get('userid');
+        $following_id = session()->get('userid');
+        $follow = $this->request->getPost('follow');
+
+        $data = [
+            'follower_id'       => $follower_id,
+            'following_id'      => $following_id,
+            'follow'            => $follow,
+            'status'            => 1,
+            'created_by'        => session()->get('id'),
+            'created_on'        => time() + 12600,
+        ];
+
+        $data2 = [
+            'follow'              => $follow,
+        ];
+
+        $old_record = $this->HomeModel->getFollowData($follower_id,$following_id);
+        if($old_record){
+            $result = $this->CommonModel->updateRecords('follower_id',$follower_id,'following_id',$following_id,'tbl_follow',$data2);
+        }else{
+            $result = $this->CommonModel->add_record('tbl_follow',$data);
+        }
+        
+        if($result){
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'You have successfully added new post'
+            ]);
+        }else{
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Something error, Try after sometime!'
+            ]);
+        }
+    }
 }
