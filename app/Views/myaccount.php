@@ -72,6 +72,124 @@
         display: table;
         clear:both;
     }
+
+
+
+
+    .share-modal-two{			
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+    }
+    .share-modal{			
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+    }
+    .share-modal::-webkit-scrollbar{
+        display: none;
+    }
+    .share-body{
+        background-color: #fefefe;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 0;
+        border: 1px solid #888;
+        width: 95%;
+        max-width: 400px;
+        border-radius: 5px;
+    }
+    .share-close{
+        font-size: 20px;
+        color: #262626;
+        position: absolute;
+        top: 6px;
+        right: 2.5%;
+        cursor: pointer;
+    }
+    .sharebox1{
+        width: 95%;
+        margin: 10px 2.5%;
+    }
+    .sharebox1 a{
+        color: #0B7dda;
+        display: inline;
+    }
+    #sharenew1{
+        padding: 5px 10px;
+    }
+    .shareLink{
+        cursor: pointer;
+    }
+    #share-modal-head{
+        padding-top: 15px;
+        padding-bottom: 15px;
+        text-align: center;
+        font-family: 'Open Sans', sans-serif;
+    }
+    #sharehelptext{
+        font-size: 12px;
+        padding: 15px 0;
+    }
+
+
+    #copy{
+        background-color: #E4E7FA;
+        padding: 4px 10px;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-left: 10px;
+        color: #252525;
+    }
+    #facebook{
+        background-color: #E4E7FA;
+        padding: 4px 10px;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-left: 5px;
+        color: #252525;
+    }
+    #whatsapp{
+        background-color: #E4E7FA;
+        padding: 4px 10px;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-left: 5px;
+        color: #252525;
+    }
+    .paper-clip{
+        position: absolute;
+        right: 15px;
+        top: 8px;
+        font-size: 20px;
+        transform: rotate(-122deg);
+    }
+    .description-text.clamped {
+        display: inline;
+        overflow: hidden;
+        /* white-space: nowrap; */
+        text-overflow: ellipsis;
+        max-width: 90%;
+    }
+    .read-more {
+        cursor: pointer;
+    }
 </style>
 
 <main id="main" class="main">
@@ -81,25 +199,27 @@
 
                 <div class="col-md-3 text-center mb-4 mb-md-0">
                     <div class="profile bg-white" style="padding: 30px 20px;">
-                        <img 
-                            src="<?= base_url('uploads/profile/'); ?><?= $account->image; ?>" 
-                            alt="Profile" 
-                            class="rounded-circle img-fluid mb-3 shadow"
-                            style="width: 150px; height: 150px; object-fit: cover;"
-                        >
-                        <h5 class="mb-2 fw-semibold"><?= $account->name; ?></h5>
-                        <button class="btn btn-primary btn-sm mb-3 px-4">Follow</button>
+                        <img src="<?= base_url('uploads/profile/'); ?><?= $account->image; ?>" alt="Profile" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #E4E7FA;">
+                        <h5 class="fw-semibold mb-0"><?= $account->name; ?></h5>
+                        <p class="mb-2 fw-semibold" style="font-size: 14px; cursor: pointer;"><?= $account->username; ?> <i id="shareLink" class="bi bi-share text-primary"></i></p>
+
+                        <!-- <button class="btn btn-primary btn-sm mb-3 mt-2" style="font-size: 13px;">Follow</button> -->
+                        <button id="followBtn" class="btn btn-primary btn-sm mb-3 mt-2" style="font-size: 13px;"><span id="buttonText"></span></button>
+                        <button class="btn btn-primary btn-sm mb-3 mt-2" style="font-size: 13px;"><i class="bi bi-gear-fill"></i></button>
+
+                        <p id="bio"><?= $account->bio; ?></p>
+
                         <div class="d-flex justify-content-around text-center border-top pt-3">
                             <div>
-                                <h6 class="mb-0">1.2K</h6>
+                                <h6 class="mb-0"><?= $account->views; ?></h6>
                                 <small class="text-muted">Views</small>
                             </div>
                             <div>
-                                <h6 class="mb-0">350</h6>
+                                <h6 class="mb-0" id="follower"><?= $account->follower; ?></h6>
                                 <small class="text-muted">Followers</small>
                             </div>
                             <div>
-                                <h6 class="mb-0">180</h6>
+                                <h6 class="mb-0" id="following"><?= $account->following; ?></h6>
                                 <small class="text-muted">Following</small>
                             </div>
                         </div>
@@ -109,21 +229,21 @@
                                 <i class="bi bi-envelope-fill me-2 text-primary"></i>
                                 <span><?= $account->email; ?></span>
                             </div>
-                            <div class="d-flex align-items-center mb-2">
+                            <!-- <div class="d-flex align-items-center mb-2">
                                 <i class="bi bi-globe me-2 text-primary"></i>
                                 <a href="https://johndoe.com" target="_blank" class="text-decoration-none">johndoe.com</a>
-                            </div>
+                            </div> -->
                             <div class="d-flex align-items-center mb-2">
                                 <i class="bi bi-briefcase-fill me-2 text-primary"></i>
                                 <span><?= $account->occupation; ?></span>
                             </div>
-                            <div class="d-flex align-items-center mb-2">
+                            <!-- <div class="d-flex align-items-center mb-2">
                                 <i class="bi bi-building me-2 text-primary"></i>
                                 <span>Currently at Google</span>
-                            </div>
+                            </div> -->
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-mortarboard-fill me-2 text-primary"></i>
-                                <span>B.Tech in Computer Science</span>
+                                <span><?= $account->education; ?></span>
                             </div>
                         </div>
                     </div>
@@ -137,7 +257,7 @@
                                     <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview" aria-selected="true" role="tab">My Posts</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-skill" aria-selected="true" role="tab">My Skills</button>
+                                    <button class="nav-link" id="mySkillTab" data-bs-toggle="tab" data-bs-target="#profile-skill" aria-selected="true" role="tab">My Skills</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit" aria-selected="false" tabindex="-1" role="tab">Edit Profile</button>
@@ -236,19 +356,19 @@
                                         <div class="row mb-3">
                                             <label for="old_password" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input type="password" class="form-control" name="old_password" id="old_password">
+                                                <input type="password" class="form-control" name="old_password" id="old_password" placeholder="Enter your current password" required>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <label for="new_password" class="col-md-4 col-lg-3 col-form-label">New Password</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input type="password" class="form-control" name="new_password" id="new_password">
+                                                <input type="password" class="form-control" name="new_password" id="new_password" placeholder="Enter your new password" required>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <label for="confirm_password" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input type="password" class="form-control" name="confirm_password" id="confirm_password">
+                                                <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="Enter your confirm password" required>
                                             </div>                          
                                         </div>
                                         <div class="text-center">
@@ -282,266 +402,346 @@
     </div>
 </div>
 
+
+<div class="share-modal">
+    <div class="share-body">
+        <div class="share-close" id='closeShare'><i class="fa fa-times"></i></div>
+        <p id="share-modal-head">Share</p>
+        <div class="sharebox1">
+
+            <a href=''><i class="bi bi-share"></i></a>
+            <a href="javascript:void(0)" onclick="copyElementText('profilelink')"><i id='copy' class="bi bi-copy"></i></a>
+            <a href=''><i id="facebook" class="bi bi-facebook"></i></a>
+            <a href=''><i id="whatsapp" class="bi bi-whatsapp"></i></a>
+
+            <p id="sharehelptext">Let's people see your skill, Share your profile to rich more people.</p>
+        </div>
+        <p id="profilelink" style="display: none;">https://snapkar.com/workinghours.php?username=<?php echo $account->username; ?></p>
+    </div>
+</div>
+
 <script>
-
-getMyPost();
-function getMyPost(){
-    $.ajax({
-        url: "<?php echo base_url('getmypost'); ?>",
-        method: "POST",
-        data: {},
-        dataType: 'JSON',         
-        beforeSend: function () {
-            for (let i = 0; i < 10; i++) {
-                $('#posts').append(
-                    `<div class="card mb-3 shadow-sm" id="skillCardSkeleton">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-2">
-                            <span class="placeholder rounded-circle me-2" style="height:45px;width:45px;"></span>
-                            <div class="w-50">
-                                <p class="placeholder-glow mb-1">
-                                <span class="placeholder col-6"></span>
-                                </p>
-                                <p class="placeholder-glow mb-0">
-                                <span class="placeholder col-4"></span>
-                                </p>
-                            </div>
-                            </div>
-
-                            <p class="placeholder-glow mb-2">
-                            <span class="placeholder col-12"></span>
-                            <span class="placeholder col-10"></span>
-                            <span class="placeholder col-8"></span>
-                            </p>
-
-                            <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-3">
-                                <span class="placeholder col-1" style="width: 15px;"></span>
-                                <span class="placeholder col-1" style="width: 15px;"></span>
-                            </div>
-                            <span class="placeholder col-2"></span>
-                            </div>
-                        </div>
-                    </div>`
-                );
-            }
-        },
-        success: function(data){
-            if(data.status == true){
-                $('#posts').html('');
-                $.each(data.result, function (key, val) {
+    var mySkillTabCliked = 0;
+    var isFollowed = <?php echo $account->is_followed == 1 ? 'true' : 'false'; ?>;
+    let buttonText = "<?php echo $account->is_followed == 1 ? 'Following' : 'Follow'; ?>";
+    $('#buttonText').html(buttonText);
+    getMyPost();
+    function getMyPost(){
+        $.ajax({
+            url: "<?php echo base_url('getmypost'); ?>",
+            method: "POST",
+            data: {},
+            dataType: 'JSON',         
+            beforeSend: function () {
+                for (let i = 0; i < 10; i++) {
                     $('#posts').append(
-                        `<div class="card mb-3 shadow-sm">
+                        `<div class="card mb-3 shadow-sm" id="skillCardSkeleton">
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-2">
-                                    <img src="<?= base_url('uploads/profile/'); ?><?= $account->image; ?>" class="rounded-circle me-2" alt="User" style="height: 45px;">
-                                    <div>
-                                        <strong>John Doe</strong><br>
-                                        <small class="text-muted">2 hours ago</small>
-                                    </div>
+                                <span class="placeholder rounded-circle me-2" style="height:45px;width:45px;"></span>
+                                <div class="w-50">
+                                    <p class="placeholder-glow mb-1">
+                                    <span class="placeholder col-6"></span>
+                                    </p>
+                                    <p class="placeholder-glow mb-0">
+                                    <span class="placeholder col-4"></span>
+                                    </p>
                                 </div>
-                                <p class="mb-2">🚀 Just finished building my first API using FastAPI! It was super fast and fun to learn.</p>
+                                </div>
+
+                                <p class="placeholder-glow mb-2">
+                                <span class="placeholder col-12"></span>
+                                <span class="placeholder col-10"></span>
+                                <span class="placeholder col-8"></span>
+                                </p>
+
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <div class="d-flex gap-3">
-                                        <a href="#" class="text-muted text-decoration-none"><i class="bi bi-heart"></i> 24</a>
-                                        <a href="#" class="text-muted text-decoration-none"><i class="bi bi-chat"></i> 5</a>
-                                    </div>
-                                    <small class="text-muted"><i class="bi bi-tag"></i> FastAPI</small>
+                                <div class="d-flex gap-3">
+                                    <span class="placeholder col-1" style="width: 15px;"></span>
+                                    <span class="placeholder col-1" style="width: 15px;"></span>
+                                </div>
+                                <span class="placeholder col-2"></span>
                                 </div>
                             </div>
                         </div>`
                     );
-                })
-            }
-            if(data.status == false){
+                }
+            },
+            success: function(data){
+                if(data.status == true){
+                    $('#posts').html('');
+                    $.each(data.result, function (key, val) {
+                        let heartClass = val.is_loved == 1 ? 'bi-heart-fill text-danger' : 'bi-heart';
+                        let likedData = val.is_loved == 1 ? true : false;
+                        let fullText = val.content || "";
+                        let shortText = fullText.length > 180 ? fullText.substring(0, 180) + "..." : fullText;
+                        let showReadMore = fullText.length > 180;
+                        $('#posts').append(
+                            `<div class="card mb-3 shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <img src="<?= base_url('uploads/profile/'); ?><?= $account->image; ?>" class="rounded-circle me-2" alt="User" style="height: 45px; border: 2px solid #E4E7FA;">
+                                        <div>
+                                            <strong>${val.name}</strong><br>
+                                            <small class="text-muted">${val.time}</small>
+                                        </div>
+                                    </div>
+                                    <p class="mb-2 description-text-container">
+                                        <span class="description-text clamped" 
+                                            data-full="${fullText.replace(/"/g, '&quot;')}" 
+                                            data-short="${shortText.replace(/"/g, '&quot;')}">
+                                            ${shortText}
+                                        </span>
+                                        ${showReadMore ? `<a href="javascript:void(0);" class="read-more small text-primary ms-1">Read more</a>` : ""}
+                                    </p>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex gap-3">
+                                            <a href="javascript:void(0);" class="like-btn text-muted text-decoration-none" data-postid="${val.id}" data-liked="${likedData}">
+                                                <i class="bi ${heartClass}"></i> <span class="like-count">${val.love}</span>
+                                            </a>
+                                            <a href="#" class="text-muted text-decoration-none"><i class="bi bi-chat"></i> 5</a>
+                                        </div>
+                                        <small class="text-muted"><i class="bi bi-tag"></i> ${val.skill}</small>
+                                    </div>
+                                </div>
+                            </div>`
+                        );
+                    })
+                }
+                if(data.status == false){
+
+                }
+            },
+            complete: function () {
 
             }
-        },
-        complete: function () {
+        });
+    }
 
+    $('#mySkillTab').on('click',function(e){
+        e.preventDefault();
+        if(mySkillTabCliked == 0){
+            getMySkill();
+            mySkillTabCliked++;
         }
     });
-}
 
 
-getMySkill();
-function getMySkill(){
-    $.ajax({
-        url: "<?php echo base_url('getmyskill'); ?>",
-        method: "POST",
-        data: {},
-        dataType: 'JSON',         
-        beforeSend: function () {
-            for (let i = 0; i < 10; i++) {
-                $('#skill').append(
-                    `<div class="col-md-6">
-                        <div class="card h-100 shadow-sm" style="margin-bottom: 0;">
-                            <div class="card-body">
-                                <h6 class="placeholder-glow mb-2">
-                                    <span class="placeholder col-6 bg-secondary"></span>
-                                </h6>
-                                <p class="small placeholder-glow mb-2">
-                                    <span class="placeholder col-8 bg-secondary"></span>
-                                </p>
-                                <ul class="list-unstyled small mb-0">
-                                    <li class="placeholder-glow mb-1">
-                                        <span class="placeholder col-5 bg-secondary"></span>
-                                    </li>
-                                    <li class="placeholder-glow">
-                                        <span class="placeholder col-6 bg-secondary"></span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>`
-                );
-            }
-        },
-        success: function(data){
-            if(data.status == true){
-                $('#skill').html('');
-                $.each(data.result, function (key, val) {
+    function getMySkill(){
+        $.ajax({
+            url: "<?php echo base_url('getmyskill'); ?>",
+            method: "POST",
+            data: {},
+            dataType: 'JSON',         
+            beforeSend: function () {
+                for (let i = 0; i < 10; i++) {
                     $('#skill').append(
                         `<div class="col-md-6">
                             <div class="card h-100 shadow-sm" style="margin-bottom: 0;">
                                 <div class="card-body">
-                                    <h6 class="card-title mb-1 fw-semibold" style="padding: 0;">${val.name}</h6>
-                                    <p class="small text-muted mb-2">Evidence: <a href="#">Portfolio Link</a></p>
+                                    <h6 class="placeholder-glow mb-2">
+                                        <span class="placeholder col-6 bg-secondary"></span>
+                                    </h6>
+                                    <p class="small placeholder-glow mb-2">
+                                        <span class="placeholder col-8 bg-secondary"></span>
+                                    </p>
                                     <ul class="list-unstyled small mb-0">
-                                        <li><strong>Added:</strong> ${val.formatted_date}</li>
-                                        <li><strong>Posts:</strong> ${val.no_of_post} related posts</li>
+                                        <li class="placeholder-glow mb-1">
+                                            <span class="placeholder col-5 bg-secondary"></span>
+                                        </li>
+                                        <li class="placeholder-glow">
+                                            <span class="placeholder col-6 bg-secondary"></span>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
                         </div>`
                     );
-                })
-            }
-            if(data.status == false){
+                }
+            },
+            success: function(data){
+                if(data.status == true){
+                    $('#skill').html('');
+
+                    $.each(data.result, function (key, val) {
+                        let url = val.url 
+                            ? `<p class="paper-clip"><a href="${val.url}" target="_blank"><i class="bi bi-paperclip"></i></a></p>` 
+                            : "";
+
+                        let fullText = val.description || "";
+                        let shortText = fullText.length > 80 ? fullText.substring(0, 80) + "..." : fullText;
+                        let showReadMore = fullText.length > 60;
+
+                        $('#skill').append(`
+                            <div class="col-md-6">
+                                <div class="card h-100 shadow-sm" style="margin-bottom: 0;">
+                                    <div class="card-body">
+                                        <h6 class="card-title mb-1 fw-semibold" style="padding: 0;">${val.name}</h6>
+                                        
+                                        <p class="mb-0 description-text-container">
+                                            <span class="description-text clamped" 
+                                                data-full="${fullText.replace(/"/g, '&quot;')}" 
+                                                data-short="${shortText.replace(/"/g, '&quot;')}">
+                                                ${shortText}
+                                            </span>
+                                            ${showReadMore ? `<a href="javascript:void(0);" class="read-more small text-primary ms-1">Read more</a>` : ""}
+                                        </p>
+
+                                        <p class="small text-muted mb-0 mt-2">
+                                            <strong>Added:</strong> ${val.formatted_date} &nbsp; | &nbsp; 
+                                            <strong>Posts:</strong> ${val.no_of_post} related posts
+                                        </p>
+                                        ${url}
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                    });
+
+
+
+                }
+                if(data.status == false){
+
+                }
+            },
+            complete: function () {
 
             }
-        },
-        complete: function () {
+        });
+    }
 
+
+    $(document).on('click', '.read-more', function () {
+        let $this = $(this);
+        let $desc = $this.siblings('.description-text');
+        let isExpanded = $this.data('expanded') || false;
+
+        if (!isExpanded) {
+            $desc.removeClass('clamped').text($desc.data('full'));
+            $this.text('Read less');
+            $this.data('expanded', true);
+        } else {
+            $desc.addClass('clamped').text($desc.data('short'));
+            $this.text('Read more');
+            $this.data('expanded', false);
         }
     });
-}
 
-$(document).ready(function() {
-    $("#profileEditForm").on("submit", function(e) {
-        e.preventDefault();
 
-        const form = this;
-        form.classList.add('was-validated');
-        if (!form.checkValidity()) return;
+    $(document).ready(function() {
+        $("#profileEditForm").on("submit", function(e) {
+            e.preventDefault();
 
-        const formData = new FormData(form);
-        const $btn = $("#saveBtn");
-        const $spinner = $btn.find(".spinner-border");
-        const $text = $btn.find(".button-text");
-        const $alert = $("#profileAlert");
+            const form = this;
+            form.classList.add('was-validated');
+            if (!form.checkValidity()) return;
 
-        // Disable button and show loader
-        $btn.prop("disabled", true);
-        $spinner.removeClass("d-none");
-        $text.text("Saving...");
+            const formData = new FormData(form);
+            const $btn = $("#saveBtn");
+            const $spinner = $btn.find(".spinner-border");
+            const $text = $btn.find(".button-text");
+            const $alert = $("#profileAlert");
 
-        $.ajax({
-            url: "<?= base_url('/updateaccount'); ?>",
-            type: "POST",
-            enctype: "multipart/form-data",
-            data: formData,
-            dataType: "json",
-            processData: false,
-            contentType: false,
-            success: function(res) {
-                if (res.status) {
-                    $alert.html(`
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="bi bi-check-circle me-1"></i> ${res.message || 'Profile updated successfully!'}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    `);
-                } else {
+            // Disable button and show loader
+            $btn.prop("disabled", true);
+            $spinner.removeClass("d-none");
+            $text.text("Saving...");
+
+            $.ajax({
+                url: "<?= base_url('/updateaccount'); ?>",
+                type: "POST",
+                enctype: "multipart/form-data",
+                data: formData,
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function(res) {
+                    if (res.status) {
+                        $alert.html(`
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="bi bi-check-circle me-1"></i> ${res.message || 'Profile updated successfully!'}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        `);
+                    } else {
+                        $alert.html(`
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-triangle me-1"></i> ${res.message || 'Failed to update profile.'}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        `);
+                    }
+                },
+                error: function() {
                     $alert.html(`
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="bi bi-exclamation-triangle me-1"></i> ${res.message || 'Failed to update profile.'}
+                            <i class="bi bi-exclamation-octagon me-1"></i> Server error! Please try again later.
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     `);
+                },
+                complete: function() {
+                    $btn.prop("disabled", false);
+                    $spinner.addClass("d-none");
+                    $text.text("Save Changes");
                 }
-            },
-            error: function() {
-                $alert.html(`
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="bi bi-exclamation-octagon me-1"></i> Server error! Please try again later.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `);
-            },
-            complete: function() {
-                $btn.prop("disabled", false);
-                $spinner.addClass("d-none");
-                $text.text("Save Changes");
-            }
+            });
         });
     });
-});
 
+    $(document).ready(function() {
+        $('#reset_password_form').on('submit', function(e) {
+            e.preventDefault();
 
+            const form = this;
+            const $btn = $(form).find('button[type="submit"]');
+            const originalBtnText = $btn.text();
+            const $alertContainer = $('#resetPasswordAlert');
 
-$(document).ready(function() {
-    $('#reset_password_form').on('submit', function(e) {
-        e.preventDefault();
-
-        const form = this;
-        const $btn = $(form).find('button[type="submit"]');
-        const originalBtnText = $btn.text();
-        const $alertContainer = $('#resetPasswordAlert');
-
-        // Optional: simple validation
-        const newPassword = $('#new_password').val();
-        const confirmPassword = $('#confirm_password').val();
-        if (newPassword !== confirmPassword) {
-            if (!$alertContainer.length) {
-                $(form).prepend('<div id="resetPasswordAlert"></div>');
-            }
-            $('#resetPasswordAlert').html('<div class="alert alert-danger">New password and confirm password do not match.</div>');
-            return;
-        }
-
-        // Disable button while processing
-        $btn.prop('disabled', true).text('Changing...');
-
-        $.ajax({
-            url: "<?= base_url('/change_password'); ?>",
-            type: "POST",
-            data: $(form).serialize(),
-            dataType: "json",
-            success: function(res) {
+            // Optional: simple validation
+            const newPassword = $('#new_password').val();
+            const confirmPassword = $('#confirm_password').val();
+            if (newPassword !== confirmPassword) {
                 if (!$alertContainer.length) {
                     $(form).prepend('<div id="resetPasswordAlert"></div>');
                 }
-
-                if (res.status) {
-                    $('#resetPasswordAlert').html(`<div class="alert alert-success">${res.message}</div>`);
-                    form.reset();
-                } else {
-                    $('#resetPasswordAlert').html(`<div class="alert alert-danger">${res.message || 'Failed to update password.'}</div>`);
-                }
-            },
-            error: function(xhr, status, error) {
-                if (!$alertContainer.length) {
-                    $(form).prepend('<div id="resetPasswordAlert"></div>');
-                }
-                $('#resetPasswordAlert').html('<div class="alert alert-danger">Server error! Please try again later.</div>');
-            },
-            complete: function() {
-                $btn.prop('disabled', false).text(originalBtnText);
+                $('#resetPasswordAlert').html('<div class="alert alert-danger">New password and confirm password do not match.</div>');
+                return;
             }
+
+            // Disable button while processing
+            $btn.prop('disabled', true).text('Changing...');
+
+            $.ajax({
+                url: "<?= base_url('/change_password'); ?>",
+                type: "POST",
+                data: $(form).serialize(),
+                dataType: "json",
+                success: function(res) {
+                    if (!$alertContainer.length) {
+                        $(form).prepend('<div id="resetPasswordAlert"></div>');
+                    }
+
+                    if (res.status) {
+                        $('#resetPasswordAlert').html(`<div class="alert alert-success">${res.message}</div>`);
+                        form.reset();
+                    } else {
+                        $('#resetPasswordAlert').html(`<div class="alert alert-danger">${res.message || 'Failed to update password.'}</div>`);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    if (!$alertContainer.length) {
+                        $(form).prepend('<div id="resetPasswordAlert"></div>');
+                    }
+                    $('#resetPasswordAlert').html('<div class="alert alert-danger">Server error! Please try again later.</div>');
+                },
+                complete: function() {
+                    $btn.prop('disabled', false).text(originalBtnText);
+                }
+            });
         });
     });
-});
 
 
     var $uploadCrop,
@@ -551,7 +751,6 @@ $(document).ready(function() {
     function chooseImage(){
         document.getElementById('img-input').click();
     }
-
 
     $('#img-input').on('change', function (ev) {
         var userImage = document.getElementById('img-input');
@@ -593,7 +792,6 @@ $(document).ready(function() {
         }
     });
 
-
     $('#cropImageBtn').on('click', function (ev) {
         $uploadCrop.croppie('result', {
             type: 'base64',
@@ -630,4 +828,107 @@ $(document).ready(function() {
     }
 
 
+    $('#shareLink').on('click',function(e){
+        e.preventDefault();
+        $('.share-modal').css('display','block');
+    });
+
+    $(window).click(function (event) {
+        if ($(event.target).is(".share-modal")) {
+            $(".share-modal").css("display", "none");
+        }
+    });
+
+    $(document).on('click', '.like-btn', function (e) {
+        e.preventDefault();
+
+        let $this = $(this);
+        let postId = $this.data('postid');
+        let $icon = $this.find('i');
+        let $count = $this.find('.like-count');
+        let currentCount = parseInt($count.text());
+        let liked = $this.data('liked') || false; // default false
+
+        if(!liked){
+            // Like
+            $icon.removeClass('bi-heart').addClass('bi-heart-fill text-danger');
+            $count.text(currentCount + 1);
+            $this.data('liked', true);
+
+            // API call for like
+            $.ajax({
+                url: "<?= base_url('insertlove'); ?>",
+                method: "POST",
+                data: { postid: postId, like: 1 },
+                success: function(res){
+                    console.log("Liked successfully:", res);
+                },
+                error: function(){
+                    console.log("Error while liking post");
+                }
+            });
+        } else {
+            // Dislike / Unlike
+            $icon.removeClass('bi-heart-fill text-danger').addClass('bi-heart');
+            $count.text(currentCount - 1);
+            $this.data('liked', false);
+
+            // API call for dislike
+            $.ajax({
+                url: "<?= base_url('insertlove'); ?>",
+                method: "POST",
+                data: { postid: postId, like: 0 },
+                success: function(res){
+                    console.log("Disliked successfully:", res);
+                },
+                error: function(){
+                    console.log("Error while disliking post");
+                }
+            });
+        }
+    });
+
+    $(document).on('click', '#followBtn', function (e) {
+        e.preventDefault();
+
+        let $this = $(this);
+        let currentCount = parseInt($('#follower').text());
+        let currentCount2 = parseInt($('#following').text());
+        let followed = isFollowed;
+
+        if(!followed){
+            $('#buttonText').html('Following');
+            $('#follower').text(currentCount + 1);
+            $('#following').text(currentCount2 + 1);
+            isFollowed = true;
+            $.ajax({
+                url: "<?= base_url('insertmyfollow'); ?>",
+                method: "POST",
+                data: { follow: 1 },
+                success: function(res){
+                    console.log("Liked successfully:", res);
+                },
+                error: function(){
+                    console.log("Error while liking post");
+                }
+            });
+        } else {
+            // $('#buttonText').html('Follow');
+            // $('#follower').text(currentCount - 1);
+            // $('#following').text(currentCount2 - 1);
+            // isFollowed = false;
+            // $.ajax({
+            //     url: "<?= base_url('insertmyfollow'); ?>",
+            //     method: "POST",
+            //     data: { userid: userid, follow: 0 },
+            //     success: function(res){
+            //         console.log("Disliked successfully:", res);
+            //     },
+            //     error: function(){
+            //         console.log("Error while disliking post");
+            //     }
+            // });
+        }
+        $this.off('click');
+    });
 </script>

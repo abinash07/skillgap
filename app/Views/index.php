@@ -1,3 +1,10 @@
+<style>
+    .read-more {
+        cursor: pointer;
+    }
+</style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.js"></script>
 <main id="main" class="main">
     <section class="section profile">
         <div class="container">
@@ -11,7 +18,7 @@
                                     <select id="skillSelect" name="skillid" id="skillid" class="form-select" required>
                                         <option value="">Select Skill</option>
                                         <?php foreach($skill as $k => $v){ ?>
-                                            <option value="<?= $v->id; ?>"><?= $v->name; ?></option>
+                                            <option value="<?= $v->slug; ?>"><?= $v->name; ?></option>
                                         <?php } ?>
                                     </select>
                                     <div class="invalid-feedback">Please select a skill.</div>
@@ -113,7 +120,22 @@
 </main>
 
 <script>
+
 $(document).ready(function () {
+    $('#content').summernote({
+        placeholder: 'Write your question here...',
+        height: 100,
+        toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']],
+
+        ]
+    });
+
     $("#postForm").on("submit", function (e) {
         e.preventDefault();
         var formdata = new FormData(this);
@@ -222,29 +244,46 @@ function getPost(){
         },
         success: function(data){
             if(data.status == true){
+                $('#posts').html('');
                 $.each(data.result, function (key, val) {
-                    $('#posts').html('');
-                    $('#posts').append(
-                        `<div class="card mb-3 shadow-sm">
+                    let heartClass = val.is_loved == 1 ? 'bi-heart-fill text-danger' : 'bi-heart';
+                    let likedData = val.is_loved == 1 ? true : false;
+                    let fullText = val.content || "";
+                    let shortText = fullText.length > 180 ? fullText.substring(0, 180) + "..." : fullText;
+                    let showReadMore = fullText.length > 180;
+                    $('#posts').append(`
+                        <div class="card mb-3 shadow-sm">
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-2">
-                                    <img src="<?= base_url(); ?>assets/img/testimonials-2.jpg" class="rounded-circle me-2" alt="User" style="height: 45px;">
+                                    <img src="<?= base_url('uploads/profile/'); ?>${val.image}" class="rounded-circle me-2" alt="User" style="height: 45px; border: 2px solid #E4E7FA;">
                                     <div>
-                                        <strong>John Doe</strong><br>
-                                        <small class="text-muted">2 hours ago</small>
+                                        <strong>${val.name}</strong><br>
+                                        <small class="text-muted">${val.time}</small>
                                     </div>
                                 </div>
-                                <p class="mb-2">🚀 Just finished building my first API using FastAPI! It was super fast and fun to learn.</p>
+
+                                <div class="mb-2 description-wrapper">
+                                    <span class="description-text clamped"
+                                        data-full='${fullText}'
+                                        data-short='${shortText}'>
+                                        ${shortText}
+                                    </span>
+                                    ${showReadMore ? `<a href="<?= base_url('postdetails'); ?>/${val.id}" class="read-more small text-primary ms-1">Read more</a>` : ""}
+                                </div>
+
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="d-flex gap-3">
-                                        <a href="#" class="text-muted text-decoration-none"><i class="bi bi-heart"></i> 24</a>
+                                        <a href="javascript:void(0);" class="like-btn text-muted text-decoration-none" data-postid="${val.id}" data-liked="${likedData}">
+                                            <i class="bi ${heartClass}"></i> <span class="like-count">${val.love}</span>
+                                        </a>
                                         <a href="#" class="text-muted text-decoration-none"><i class="bi bi-chat"></i> 5</a>
                                     </div>
-                                    <small class="text-muted"><i class="bi bi-tag"></i> FastAPI</small>
+                                    <small class="text-muted"><i class="bi bi-tag"></i> ${val.skill}</small>
                                 </div>
                             </div>
-                        </div>`
-                    );
+                        </div>
+                    `);
+
                 })
             }
             if(data.status == false){
@@ -295,4 +334,57 @@ function getPopularSkill(){
         }
     });
 }
+
+
+
+$(document).on('click', '.like-btn', function (e) {
+    e.preventDefault();
+
+    let $this = $(this);
+    let postId = $this.data('postid');
+    let $icon = $this.find('i');
+    let $count = $this.find('.like-count');
+    let currentCount = parseInt($count.text());
+    let liked = $this.data('liked') || false; // default false
+
+    if(!liked){
+        // Like
+        $icon.removeClass('bi-heart').addClass('bi-heart-fill text-danger');
+        $count.text(currentCount + 1);
+        $this.data('liked', true);
+
+        // API call for like
+        $.ajax({
+            url: "<?= base_url('insertlove'); ?>",
+            method: "POST",
+            data: { postid: postId, like: 1 },
+            success: function(res){
+                console.log("Liked successfully:", res);
+            },
+            error: function(){
+                console.log("Error while liking post");
+            }
+        });
+    } else {
+        // Dislike / Unlike
+        $icon.removeClass('bi-heart-fill text-danger').addClass('bi-heart');
+        $count.text(currentCount - 1);
+        $this.data('liked', false);
+
+        // API call for dislike
+        $.ajax({
+            url: "<?= base_url('insertlove'); ?>",
+            method: "POST",
+            data: { postid: postId, like: 0 },
+            success: function(res){
+                console.log("Disliked successfully:", res);
+            },
+            error: function(){
+                console.log("Error while disliking post");
+            }
+        });
+    }
+});
+
+
 </script>

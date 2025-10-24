@@ -23,11 +23,15 @@ $routes->post('/getpost', 'Home::get_post');
 //$routes->get('/profile', 'Home::profile');
 
 $routes->post('/getpopularskill', 'Home::get_popular_skill');
+$routes->get('/postdetails/(:any)', 'Home::post_details/$1');
 
 
 $routes->post('/getuserdata', 'Home::get_user_data');
 $routes->post('/getuserpost', 'Home::get_user_post');
 $routes->post('/getuserskill', 'Home::get_user_skill');
+$routes->post('/insertlove', 'Home::insert_love');
+$routes->post('/insertfollow', 'Home::insert_follow');
+$routes->post('/insertmyfollow', 'Home::insert_my_follow');
 
 $routes->get('(:any)', 'Home::profile/$1');
 
