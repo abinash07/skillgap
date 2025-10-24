@@ -13,6 +13,7 @@ $routes->get('/logout','Auth::logout');
 
 $routes->get('/addskill', 'Home::add_skill');
 $routes->post('/insertskill', 'Home::insert_skill');
+$routes->get('/addpost', 'Home::add_post');
 $routes->post('/insertpost', 'Home::insert_post');
 $routes->get('/myaccount', 'Home::myaccount');
 $routes->post('/getmypost', 'Home::get_my_post');
@@ -20,10 +21,13 @@ $routes->post('/getmyskill', 'Home::get_my_skill');
 $routes->post('/updateaccount', 'Home::update_account');
 $routes->post('/change_password', 'Home::reset_user_password');
 $routes->post('/getpost', 'Home::get_post');
-//$routes->get('/profile', 'Home::profile');
+$routes->post('/getsinglepost', 'Home::get_single_post');
+
 
 $routes->post('/getpopularskill', 'Home::get_popular_skill');
 $routes->get('/postdetails/(:any)', 'Home::post_details/$1');
+$routes->get('/posts/(:any)', 'Home::post_list/$1');
+$routes->post('/getskillpost', 'Home::get_skill_post');
 
 
 $routes->post('/getuserdata', 'Home::get_user_data');
@@ -35,7 +39,7 @@ $routes->post('/insertmyfollow', 'Home::insert_my_follow');
 
 $routes->get('(:any)', 'Home::profile/$1');
 
-
+//$routes->get('/profile', 'Home::profile');
 //$routes->get('/dashboard', 'Dashboard\Home::index');
 //$routes->get('/addskill', 'Dashboard\Home::add_skill');
 // $routes->get('/skillanalysis', 'Dashboard\Home::skill_analysis');

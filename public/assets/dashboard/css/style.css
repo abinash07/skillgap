@@ -41,7 +41,7 @@ h6 {
 
 @media (max-width: 1199px) {
   #main {
-    padding: 20px;
+    padding: 15px 0 0 0;
   }
 }
 
@@ -381,7 +381,7 @@ h6 {
 
 .header .toggle-sidebar-btn {
   font-size: 32px;
-  padding-left: 10px;
+  padding-left: 0;
   cursor: pointer;
   color: #012970;
 }
@@ -461,7 +461,7 @@ h6 {
 .header-nav .nav-icon {
   font-size: 22px;
   color: #012970;
-  margin-right: 25px;
+  margin-right: 15px;
   position: relative;
 }
 
@@ -470,7 +470,10 @@ h6 {
 }
 
 .header-nav .nav-profile img {
-  max-height: 36px;
+  width: 35px; 
+  height: 35px; 
+  object-fit: cover; 
+  border: 2px solid #E4E7FA;
 }
 
 .header-nav .nav-profile span {
@@ -1454,4 +1457,120 @@ h6 {
 .nav-link2 i {
     margin-right: 0.75rem;
     width: 20px;
+}
+
+#copy{
+  background-color: #E4E7FA;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-left: 10px;
+  color: #252525;
+}
+#facebook{
+  background-color: #E4E7FA;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-left: 5px;
+}
+#whatsapp{
+  background-color: #E4E7FA;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-left: 5px;
+}
+
+
+
+.read-more {
+  cursor: pointer;
+}
+.share-modal-three{			
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+}
+.share-modal-two{			
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+}
+.share-modal{			
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+}
+.share-modal::-webkit-scrollbar{
+  display: none;
+}
+.share-body{
+  background-color: #fefefe;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  border: 1px solid #888;
+  width: 95%;
+  max-width: 400px;
+  border-radius: 5px;
+}
+.share-close{
+  font-size: 20px;
+  color: #262626;
+  position: absolute;
+  top: 6px;
+  right: 2.5%;
+  cursor: pointer;
+}
+.sharebox1{
+  width: 95%;
+  margin: 10px 2.5%;
+}
+.sharebox1 a{
+  color: #0B7dda;
+  display: inline;
+}
+#sharenew1{
+  padding: 5px 10px;
+}
+.shareLink{
+  cursor: pointer;
+}
+#share-modal-head{
+  padding-top: 15px;
+  padding-bottom: 15px;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+}
+#sharehelptext{
+  font-size: 12px;
+  padding: 15px 0;
+}
+.skill-active{
+  background-color: #0b7dda!important;
+  color: #FFF!important;
 }

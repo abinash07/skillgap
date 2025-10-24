@@ -73,106 +73,6 @@
         clear:both;
     }
 
-
-
-
-    .share-modal-two{			
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(5px);
-    }
-    .share-modal{			
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(5px);
-    }
-    .share-modal::-webkit-scrollbar{
-        display: none;
-    }
-    .share-body{
-        background-color: #fefefe;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        padding: 0;
-        border: 1px solid #888;
-        width: 95%;
-        max-width: 400px;
-        border-radius: 5px;
-    }
-    .share-close{
-        font-size: 20px;
-        color: #262626;
-        position: absolute;
-        top: 6px;
-        right: 2.5%;
-        cursor: pointer;
-    }
-    .sharebox1{
-        width: 95%;
-        margin: 10px 2.5%;
-    }
-    .sharebox1 a{
-        color: #0B7dda;
-        display: inline;
-    }
-    #sharenew1{
-        padding: 5px 10px;
-    }
-    .shareLink{
-        cursor: pointer;
-    }
-    #share-modal-head{
-        padding-top: 15px;
-        padding-bottom: 15px;
-        text-align: center;
-        font-family: 'Open Sans', sans-serif;
-    }
-    #sharehelptext{
-        font-size: 12px;
-        padding: 15px 0;
-    }
-
-
-    #copy{
-        background-color: #E4E7FA;
-        padding: 4px 10px;
-        border-radius: 5px;
-        font-size: 16px;
-        margin-left: 10px;
-        color: #252525;
-    }
-    #facebook{
-        background-color: #E4E7FA;
-        padding: 4px 10px;
-        border-radius: 5px;
-        font-size: 16px;
-        margin-left: 5px;
-        color: #252525;
-    }
-    #whatsapp{
-        background-color: #E4E7FA;
-        padding: 4px 10px;
-        border-radius: 5px;
-        font-size: 16px;
-        margin-left: 5px;
-        color: #252525;
-    }
     .paper-clip{
         position: absolute;
         right: 15px;
@@ -187,16 +87,13 @@
         text-overflow: ellipsis;
         max-width: 90%;
     }
-    .read-more {
-        cursor: pointer;
-    }
+    
 </style>
 
 <main id="main" class="main">
     <section class="section profile">
         <div class="container">
             <div class="row">
-
                 <div class="col-md-3 text-center mb-4 mb-md-0">
                     <div class="profile bg-white" style="padding: 30px 20px;">
                         <img src="<?= base_url('uploads/profile/'); ?><?= $account->image; ?>" alt="Profile" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #E4E7FA;">
@@ -420,6 +317,23 @@
     </div>
 </div>
 
+<div class="share-modal-two">
+    <div class="share-body">
+        <div class="share-close" id='closeShare'><i class="fa fa-times"></i></div>
+        <p id="share-modal-head">Share</p>
+        <div class="sharebox1">
+
+            <a href=''><i class="bi bi-share"></i></a>
+            <a href="javascript:void(0)" onclick="copyElementText('profilelink')"><i id='copy' class="bi bi-copy"></i></a>
+            <a href=''><i id="facebook" class="bi bi-facebook"></i></a>
+            <a href=''><i id="whatsapp" class="bi bi-whatsapp"></i></a>
+
+            <p id="sharehelptext">Let's people see your skill, Share your profile to rich more people.</p>
+        </div>
+        <p id="profilelink" style="display: none;">https://snapkar.com/workinghours.php?username=</p>
+    </div>
+</div>
+
 <script>
     var mySkillTabCliked = 0;
     var isFollowed = <?php echo $account->is_followed == 1 ? 'true' : 'false'; ?>;
@@ -482,24 +396,22 @@
                                     <div class="d-flex align-items-center mb-2">
                                         <img src="<?= base_url('uploads/profile/'); ?><?= $account->image; ?>" class="rounded-circle me-2" alt="User" style="height: 45px; border: 2px solid #E4E7FA;">
                                         <div>
-                                            <strong>${val.name}</strong><br>
-                                            <small class="text-muted">${val.time}</small>
+                                            <p class="mb-0" style="color: #252525;"><strong>${val.name}</strong></p>
+                                            <p class="mb-0"><small class="text-muted">${val.time}</small></p>
                                         </div>
                                     </div>
                                     <p class="mb-2 description-text-container">
-                                        <span class="description-text clamped" 
-                                            data-full="${fullText.replace(/"/g, '&quot;')}" 
-                                            data-short="${shortText.replace(/"/g, '&quot;')}">
+                                        <span class="description-text clamped">
                                             ${shortText}
                                         </span>
-                                        ${showReadMore ? `<a href="javascript:void(0);" class="read-more small text-primary ms-1">Read more</a>` : ""}
+                                        ${showReadMore ? `<a href="<?= base_url('postdetails'); ?>/${val.id}" class="read-more small text-primary ms-1">Read more</a>` : ""}
                                     </p>
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div class="d-flex gap-3">
                                             <a href="javascript:void(0);" class="like-btn text-muted text-decoration-none" data-postid="${val.id}" data-liked="${likedData}">
                                                 <i class="bi ${heartClass}"></i> <span class="like-count">${val.love}</span>
                                             </a>
-                                            <a href="#" class="text-muted text-decoration-none"><i class="bi bi-chat"></i> 5</a>
+                                            <a href="javascript:void(0);" class="share-btn text-muted text-decoration-none" data-postid="${val.id}"><i class="bi bi-share"></i></a>
                                         </div>
                                         <small class="text-muted"><i class="bi bi-tag"></i> ${val.skill}</small>
                                     </div>
@@ -612,21 +524,6 @@
     }
 
 
-    $(document).on('click', '.read-more', function () {
-        let $this = $(this);
-        let $desc = $this.siblings('.description-text');
-        let isExpanded = $this.data('expanded') || false;
-
-        if (!isExpanded) {
-            $desc.removeClass('clamped').text($desc.data('full'));
-            $this.text('Read less');
-            $this.data('expanded', true);
-        } else {
-            $desc.addClass('clamped').text($desc.data('short'));
-            $this.text('Read more');
-            $this.data('expanded', false);
-        }
-    });
 
 
     $(document).ready(function() {
@@ -828,12 +725,28 @@
     }
 
 
+    $(document).on('click', '.share-btn', function (e) {
+        e.preventDefault();
+
+        let $this = $(this);
+        let postId = $this.data('postid');
+        let profileUrl = `https://skillkr.com/postdetails/${postId}`;
+        $('#profilelink').text(profileUrl);
+        $('#facebook').parent('a').attr('href',`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(profileUrl)}`);
+        $('#whatsapp').parent('a').attr('href',`https://api.whatsapp.com/send?text=${encodeURIComponent("Check this out: " + profileUrl)}`);
+
+        $('.share-modal').css('display','block');
+    });
+
     $('#shareLink').on('click',function(e){
         e.preventDefault();
         $('.share-modal').css('display','block');
     });
 
     $(window).click(function (event) {
+        if ($(event.target).is(".share-modal-two")) {
+            $(".share-modal").css("display", "none");
+        }
         if ($(event.target).is(".share-modal")) {
             $(".share-modal").css("display", "none");
         }
