@@ -1,3 +1,4 @@
+
 <main id="main" class="main">
     <section class="section profile">
         <div class="container">
@@ -5,7 +6,6 @@
                 <div class="col-md-8">
                     <div id="posts"></div>
                 </div>
-
                 <div class="col-md-4 d-none d-lg-inline">
                     <div class="card shadow-sm">
                         <div class="card-header bg-white fw-semibold">
@@ -15,70 +15,6 @@
                             <div class="d-flex flex-wrap gap-2" id="popularSkill"></div>
                         </div>
                     </div>
-
-                    <!-- Optional: Suggested users -->
-                    <div class="card mt-4 shadow-sm">
-                        <div class="card-header bg-white fw-semibold">
-                            <i class="bi bi-people me-1 text-primary"></i> Suggested Users
-                        </div>
-                        <div class="list-group list-group-flush">
-                            <a href="#" class="list-group-item d-flex align-items-center">
-                                <img src="<?= base_url(); ?>assets/img/testimonials-2.jpg" class="rounded-circle me-2" alt="User" style="height: 45px;">
-                                <div>
-                                    <strong>Ravi Kumar</strong><br>
-                                    <small class="text-muted">Web Developer</small>
-                                </div>
-                            </a>
-                            <a href="#" class="list-group-item d-flex align-items-center">
-                                <img src="<?= base_url(); ?>assets/img/testimonials-2.jpg" class="rounded-circle me-2" alt="User" style="height: 45px;">
-                                <div>
-                                    <strong>Anjali Verma</strong><br>
-                                    <small class="text-muted">Data Analyst</small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- <div class="card shadow-sm">
-                        <div class="card-header bg-white fw-semibold">
-                            <span class="placeholder col-5 bg-secondary"></span>
-                        </div>
-                        <div class="list-group list-group-flush">
-                            <div class="list-group-item d-flex align-items-center">
-                                <span class="placeholder rounded-circle bg-secondary me-2" style="width:45px; height:45px;"></span>
-                                <div class="flex-grow-1">
-                                    <p class="placeholder-glow mb-1">
-                                        <span class="placeholder col-6 bg-secondary"></span>
-                                    </p>
-                                    <p class="placeholder-glow mb-0">
-                                        <span class="placeholder col-4 bg-secondary"></span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="list-group-item d-flex align-items-center">
-                                <span class="placeholder rounded-circle bg-secondary me-2" style="width:45px; height:45px;"></span>
-                                <div class="flex-grow-1">
-                                    <p class="placeholder-glow mb-1">
-                                        <span class="placeholder col-6 bg-secondary"></span>
-                                    </p>
-                                    <p class="placeholder-glow mb-0">
-                                        <span class="placeholder col-4 bg-secondary"></span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="list-group-item d-flex align-items-center">
-                                <span class="placeholder rounded-circle bg-secondary me-2" style="width:45px; height:45px;"></span>
-                                <div class="flex-grow-1">
-                                    <p class="placeholder-glow mb-1">
-                                        <span class="placeholder col-6 bg-secondary"></span>
-                                    </p>
-                                    <p class="placeholder-glow mb-0">
-                                        <span class="placeholder col-4 bg-secondary"></span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
                 </div>                
             </div>
         </div>
@@ -92,30 +28,29 @@
         <div class="share-close" id='closeShare'><i class="fa fa-times"></i></div>
         <p id="share-modal-head">Share</p>
         <div class="sharebox1">
-
             <a href=''><i class="bi bi-share"></i></a>
             <a href="javascript:void(0)" onclick="copyElementText('profilelink')"><i id='copy' class="bi bi-copy"></i></a>
             <a href=''><i id="facebook" class="bi bi-facebook"></i></a>
             <a href=''><i id="whatsapp" class="bi bi-whatsapp"></i></a>
-
             <p id="sharehelptext">Let's people see your skill, Share your profile to rich more people.</p>
         </div>
         <p id="profilelink" style="display: none;">https://snapkar.com/workinghours.php?username=</p>
     </div>
 </div>
 
+
 <script>
     function isMobile() {
         return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
     }
 
-    
-    getPost();
-    function getPost(){
+    var skill = "<?php echo $skill; ?>";
+    getSkillPost(skill);
+    function getSkillPost(skill){
         $.ajax({
-            url: "<?php echo base_url('getpost'); ?>",
+            url: "<?php echo base_url('getskillpost'); ?>",
             method: "POST",
-            data: {},
+            data: {skill: skill},
             dataType: 'JSON',         
             beforeSend: function () {
                 for (let i = 0; i < 10; i++) {
@@ -123,29 +58,27 @@
                         `<div class="card mb-3 shadow-sm" id="skillCardSkeleton">
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-2">
-                                <span class="placeholder rounded-circle me-2" style="height:45px;width:45px;"></span>
-                                <div class="w-50">
-                                    <p class="placeholder-glow mb-1">
-                                    <span class="placeholder col-6"></span>
-                                    </p>
-                                    <p class="placeholder-glow mb-0">
-                                    <span class="placeholder col-4"></span>
-                                    </p>
+                                    <span class="placeholder rounded-circle me-2" style="height:45px;width:45px;"></span>
+                                    <div class="w-50">
+                                        <p class="placeholder-glow mb-1">
+                                            <span class="placeholder col-6"></span>
+                                        </p>
+                                        <p class="placeholder-glow mb-0">
+                                            <span class="placeholder col-4"></span>
+                                        </p>
+                                    </div>
                                 </div>
-                                </div>
-
                                 <p class="placeholder-glow mb-2">
-                                <span class="placeholder col-12"></span>
-                                <span class="placeholder col-10"></span>
-                                <span class="placeholder col-8"></span>
+                                    <span class="placeholder col-12"></span>
+                                    <span class="placeholder col-10"></span>
+                                    <span class="placeholder col-8"></span>
                                 </p>
-
                                 <div class="d-flex align-items-center justify-content-between">
-                                <div class="d-flex gap-3">
-                                    <span class="placeholder col-1" style="width: 15px;"></span>
-                                    <span class="placeholder col-1" style="width: 15px;"></span>
-                                </div>
-                                <span class="placeholder col-2"></span>
+                                    <div class="d-flex gap-3">
+                                        <span class="placeholder col-1" style="width: 15px;"></span>
+                                        <span class="placeholder col-1" style="width: 15px;"></span>
+                                    </div>
+                                    <span class="placeholder col-2"></span>
                                 </div>
                             </div>
                         </div>`
@@ -227,8 +160,14 @@
                 if(data.status == true){
                     $('#popularSkill').html('');
                     $.each(data.result, function (key, val) {
+                        if(val.slug == skill){
+                            var aclass='skill-active';
+                        }else{
+                            var aclass='';
+                        }
+                        
                         $('#popularSkill').append(
-                            `<a href="<?= base_url('posts/'); ?>${val.slug}" class="badge bg-primary-subtle text-primary border border-primary">${val.name}</a>`
+                            `<a href="<?= base_url('posts/'); ?>${val.slug}" class="badge bg-primary-subtle text-primary border border-primary ${aclass}">${val.name}</a>`
                         );
                     })
                 }

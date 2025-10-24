@@ -20,7 +20,6 @@ class Home extends BaseController{
 
     public function index(){
         $data=[];
-        $data['skill'] = $this->HomeModel->getSkillData();
         return $this->loadView('index',$data);
     }
 
@@ -35,15 +34,23 @@ class Home extends BaseController{
         return $this->loadView('addskill',$data);
     }
 
+    public function add_post(){
+        $data=[];
+        $userid = session()->get('userid');
+        $data['skill'] = $this->HomeModel->getSkillData($userid);
+        return $this->loadView('addpost',$data);
+    }
+
+    public function post_list($skill){
+        $data=[];
+        $data['skill']= $skill;
+        return $this->loadView('posts',$data);
+    }
+
     public function myaccount(){
         $data=[];
         $userid = session()->get('userid');
         $data['account'] = $this->HomeModel->getAccountDetails($userid);
-
-        // echo '<pre>';
-        // print_r($data['account']);
-        // exit;
-
         return $this->loadView('myaccount',$data);
     }
 
@@ -163,8 +170,9 @@ class Home extends BaseController{
             $response[$k]['id'] = $v->id;
             $response[$k]['image'] = $v->image;
             $response[$k]['name'] = $v->name;
+            $response[$k]['username'] = $v->username;
             $content = strip_tags($v->content);
-            $response[$k]['content'] = substr($content,0,100);
+            $response[$k]['content'] = substr($content,0,300);
             $response[$k]['skill'] = $v->skill;
             $response[$k]['time'] = $this->timeAgo($v->created_on);
             $response[$k]['love'] = $v->love;
@@ -172,6 +180,37 @@ class Home extends BaseController{
         }
 
         if ($result) {
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'Record found',
+                'result' => $response
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Record not found'
+            ]);
+        }
+    }
+
+    public function get_single_post(){
+        $userid = session()->get('userid');
+        $postid = $this->request->getPost('postid');
+        $result = $this->HomeModel->getSinglePost($postid,$userid);
+
+        if ($result) {
+            $response = array(
+                'id' => $result->id,
+                'image'=> $result->image,
+                'name' => $result->name,
+                'username' => $result->username,
+                'content' => $result->content,
+                'skill' => $result->skill,
+                'time' => $this->timeAgo($result->created_on),
+                'love' => $result->love,
+                'is_loved' => $result->is_loved,
+            );
+
             return $this->response->setJSON([
                 'status'  => true,
                 'message' => 'Record found',
@@ -299,7 +338,6 @@ class Home extends BaseController{
         }
     }
 
-
     public function get_my_post(){
         $userid = session()->get('userid');
         $result = $this->HomeModel->getMyPost($userid);
@@ -309,7 +347,8 @@ class Home extends BaseController{
             $response[$k]['id'] = $v->id;
             $response[$k]['image'] = $v->image;
             $response[$k]['name'] = $v->name;
-            $response[$k]['content'] = $v->content;
+            $content = strip_tags($v->content);
+            $response[$k]['content'] = substr($content,0,300);
             $response[$k]['skill'] = $v->skill;
             $response[$k]['time'] = $this->timeAgo($v->created_on);
             $response[$k]['love'] = $v->love;
@@ -386,7 +425,8 @@ class Home extends BaseController{
             $response[$k]['id'] = $v->id;
             $response[$k]['image'] = $v->image;
             $response[$k]['name'] = $v->name;
-            $response[$k]['content'] = $v->content;
+            $content = strip_tags($v->content);
+            $response[$k]['content'] = substr($content,0,300);
             $response[$k]['skill'] = $v->skill;
             $response[$k]['time'] = $this->timeAgo($v->created_on);
             $response[$k]['love'] = $v->love;
@@ -497,7 +537,6 @@ class Home extends BaseController{
         }
     }
 
-
     public function insert_follow(){
         $session = session();
         
@@ -589,6 +628,40 @@ class Home extends BaseController{
             return $this->response->setJSON([
                 'status'  => false,
                 'message' => 'Something error, Try after sometime!'
+            ]);
+        }
+    }
+
+    public function get_skill_post(){
+        $userid = session()->get('userid');
+        $skill = $this->request->getPost('skill');
+
+        $result = $this->HomeModel->getSkillPost($skill,$userid);
+
+        $response = [];
+        foreach($result as $k => $v){
+            $response[$k]['id'] = $v->id;
+            $response[$k]['image'] = $v->image;
+            $response[$k]['name'] = $v->name;
+            $response[$k]['username'] = $v->username;
+            $content = strip_tags($v->content);
+            $response[$k]['content'] = substr($content,0,300);
+            $response[$k]['skill'] = $v->skill;
+            $response[$k]['time'] = $this->timeAgo($v->created_on);
+            $response[$k]['love'] = $v->love;
+            $response[$k]['is_loved'] = $v->is_loved;
+        }
+
+        if ($result) {
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'Record found',
+                'result' => $response
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Record not found'
             ]);
         }
     }

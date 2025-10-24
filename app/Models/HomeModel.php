@@ -3,9 +3,9 @@ namespace App\Models;
 use CodeIgniter\Model;
 
 class HomeModel extends Model{
-    public function getSkillData(){
+    public function getSkillData($userid){
         $db = \Config\Database::connect();
-        $query = $db->query("SELECT * FROM tbl_skill WHERE status=1 ORDER BY name ASC");
+        $query = $db->query("SELECT * FROM tbl_skill WHERE status=1 AND userid='$userid' ORDER BY name ASC");
         return $result = $query->getResult();
     }
 
@@ -30,7 +30,7 @@ class HomeModel extends Model{
 
     public function getPost($userid){
         $db = \Config\Database::connect();
-        $query = $db->query("SELECT tp.*, tu.name, tam.image, ts.name as skill, count(tl.id) as love, CASE WHEN tl2.id IS NOT NULL AND tl2.love = 1 THEN 1 ELSE 0 END as is_loved
+        $query = $db->query("SELECT tp.*, tu.username, tu.name, tam.image, ts.name as skill, count(tl.id) as love, CASE WHEN tl2.id IS NOT NULL AND tl2.love = 1 THEN 1 ELSE 0 END as is_loved
         FROM tbl_post as tp
         LEFT JOIN tbl_skill as ts ON ts.slug = tp.skill_slug
         INNER JOIN tbl_user as tu ON tu.userid = tp.userid
@@ -39,6 +39,21 @@ class HomeModel extends Model{
         LEFT JOIN tbl_love as tl2 ON tl2.postid = tp.id AND tl2.userid = '$userid'
         WHERE tp.status=1 GROUP BY tp.id");
         return $result = $query->getResult();  
+    }
+
+    
+
+    public function getSinglePost($postid,$userid){
+        $db = \Config\Database::connect();
+        $query = $db->query("SELECT tp.*, tu.username, tu.name, tam.image, ts.name as skill, count(tl.id) as love, CASE WHEN tl2.id IS NOT NULL AND tl2.love = 1 THEN 1 ELSE 0 END as is_loved
+        FROM tbl_post as tp
+        LEFT JOIN tbl_skill as ts ON ts.slug = tp.skill_slug
+        INNER JOIN tbl_user as tu ON tu.userid = tp.userid
+        INNER JOIN tbl_about_me as tam ON tam.userid = tu.userid
+        LEFT JOIN tbl_love as tl ON tl.postid = tp.id AND tl.love = 1
+        LEFT JOIN tbl_love as tl2 ON tl2.postid = tp.id AND tl2.userid = '$userid'
+        WHERE tp.status=1 AND tp.id=$postid");
+        return $result = $query->getRow();  
     }
 
     public function getPopularSkill(){
@@ -141,5 +156,18 @@ class HomeModel extends Model{
         FROM tbl_follow as tf
         WHERE tf.follower_id='$followerid' AND tf.following_id='$followingid'");
         return $result = $query->getNumRows();
+    }
+
+    public function getSkillPost($skill,$userid){
+        $db = \Config\Database::connect();
+        $query = $db->query("SELECT tp.*, tu.name, tam.image, tu.username, ts.name as skill, count(tl.id) as love, CASE WHEN tl2.id IS NOT NULL AND tl2.love = 1 THEN 1 ELSE 0 END as is_loved
+        FROM tbl_post as tp
+        LEFT JOIN tbl_skill as ts ON ts.slug = tp.skill_slug
+        INNER JOIN tbl_user as tu ON tu.userid = tp.userid
+        INNER JOIN tbl_about_me as tam ON tam.userid = tu.userid
+        LEFT JOIN tbl_love as tl ON tl.postid = tp.id AND tl.love = 1
+        LEFT JOIN tbl_love as tl2 ON tl2.postid = tp.id AND tl2.userid = '$userid'
+        WHERE tp.status=1 AND tp.skill_slug='$skill' GROUP BY tp.id");
+        return $result = $query->getResult();  
     }
 }
