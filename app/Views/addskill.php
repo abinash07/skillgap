@@ -1,6 +1,9 @@
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
 <main id="main" class="main">
     <section class="section profile">
-        <div class="container py-5">
+        <div class="container ">
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6">
                     <div class="card shadow-sm border-0">
@@ -65,6 +68,36 @@
 </main>
 
 <script>
+
+    $(document).ready(function() {
+        var skills = [];
+
+        $("#name").autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: "<?= base_url('/getpopularskill'); ?>",
+                    type: "POST",
+                    dataType: "json",
+                    data: { term: request.term },
+                    success: function(data) {
+                        var skills = data.result.map(function(item) {
+                            return item.name;
+                        });
+                        response(skills);
+                    },
+                    error: function() {
+                        response([]);
+                    }
+                });
+            },
+            minLength: 1,
+            select: function(event, ui) {
+                $("#name").val(ui.item.value);
+                return false;
+            }
+        });
+    });
+
     $(document).ready(function () {
         $("#addSkillForm").on("submit", function (e) {
             e.preventDefault();

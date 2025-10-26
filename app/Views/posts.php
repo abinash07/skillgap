@@ -126,7 +126,19 @@
                     })
                 }
                 if(data.status == false){
-
+                    $('#posts').html(
+                        `<div class="text-center py-5 border rounded-3 bg-light" id="noPostBox">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" width="120" opacity="0.7">
+                                <rect x="20" y="40" width="160" height="90" rx="10" ry="10" fill="#f8f9fa" stroke="#ced4da" stroke-width="2"/>
+                                <path d="M20 60 L60 30 L140 30 L180 60 Z" fill="#e9ecef" stroke="#adb5bd" stroke-width="2"/>
+                                <circle cx="100" cy="95" r="14" fill="#dee2e6"/>
+                                <line x1="100" y1="95" x2="100" y2="83" stroke="#adb5bd" stroke-width="3"/>
+                                <circle cx="100" cy="72" r="2" fill="#adb5bd"/>
+                            </svg>
+                            <h5 class="fw-semibold text-muted mb-2">No posts yet</h5>
+                            <p class="text-secondary mb-3">No one shared any posts yet. Check back later!</p>
+                        </div>`
+                    );
                 }
             },
             complete: function () {

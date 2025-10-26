@@ -10,6 +10,11 @@
                     <div class="card shadow-sm">
                         <div class="card-header bg-white fw-semibold">
                             <i class="bi bi-tags me-1 text-primary"></i> Popular Skills
+                            <span style="float: right;">
+                                <a class="btn btn-secondary btn-sm" href="<?= base_url(); ?>addskill">
+                                    <i class="bi bi-plus-circle-dotted"></i> Add Skill
+                                </a>
+                            </span>
                         </div>
                         <div class="card-body">
                             <div class="d-flex flex-wrap gap-2" id="popularSkill"></div>
@@ -21,64 +26,15 @@
                         <div class="card-header bg-white fw-semibold">
                             <i class="bi bi-people me-1 text-primary"></i> Suggested Users
                         </div>
-                        <div class="list-group list-group-flush">
-                            <a href="#" class="list-group-item d-flex align-items-center">
-                                <img src="<?= base_url(); ?>assets/img/testimonials-2.jpg" class="rounded-circle me-2" alt="User" style="height: 45px;">
-                                <div>
-                                    <strong>Ravi Kumar</strong><br>
-                                    <small class="text-muted">Web Developer</small>
-                                </div>
-                            </a>
-                            <a href="#" class="list-group-item d-flex align-items-center">
-                                <img src="<?= base_url(); ?>assets/img/testimonials-2.jpg" class="rounded-circle me-2" alt="User" style="height: 45px;">
-                                <div>
-                                    <strong>Anjali Verma</strong><br>
-                                    <small class="text-muted">Data Analyst</small>
-                                </div>
-                            </a>
-                        </div>
+                        <div class="list-group list-group-flush" id="suggestedUser"></div>
                     </div>
-
-                    <!-- <div class="card shadow-sm">
-                        <div class="card-header bg-white fw-semibold">
-                            <span class="placeholder col-5 bg-secondary"></span>
-                        </div>
-                        <div class="list-group list-group-flush">
-                            <div class="list-group-item d-flex align-items-center">
-                                <span class="placeholder rounded-circle bg-secondary me-2" style="width:45px; height:45px;"></span>
-                                <div class="flex-grow-1">
-                                    <p class="placeholder-glow mb-1">
-                                        <span class="placeholder col-6 bg-secondary"></span>
-                                    </p>
-                                    <p class="placeholder-glow mb-0">
-                                        <span class="placeholder col-4 bg-secondary"></span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="list-group-item d-flex align-items-center">
-                                <span class="placeholder rounded-circle bg-secondary me-2" style="width:45px; height:45px;"></span>
-                                <div class="flex-grow-1">
-                                    <p class="placeholder-glow mb-1">
-                                        <span class="placeholder col-6 bg-secondary"></span>
-                                    </p>
-                                    <p class="placeholder-glow mb-0">
-                                        <span class="placeholder col-4 bg-secondary"></span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="list-group-item d-flex align-items-center">
-                                <span class="placeholder rounded-circle bg-secondary me-2" style="width:45px; height:45px;"></span>
-                                <div class="flex-grow-1">
-                                    <p class="placeholder-glow mb-1">
-                                        <span class="placeholder col-6 bg-secondary"></span>
-                                    </p>
-                                    <p class="placeholder-glow mb-0">
-                                        <span class="placeholder col-4 bg-secondary"></span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
+                    <ul class="list-unstyled" style="font-size: 12px;">
+                        <a href="<?= base_url(); ?>aboutus" class="text-secondary">About Us</a> || 
+                        <a href="<?= base_url(); ?>contactus" class="text-secondary">Contact Us</a> ||
+                        <a href="<?= base_url(); ?>terms" class="text-secondary">Terms & Conditions</a> ||
+                        <a href="<?= base_url(); ?>privacy" class="text-secondary">Privacy Policy</a>
+                        <li>© 2025 Skillkr</li>
+                    </ul>
                 </div>                
             </div>
         </div>
@@ -204,6 +160,7 @@
 
     if (!isMobile()) {
         getPopularSkill();
+        getSuggestedUser();
     }
     function getPopularSkill(){
         $.ajax({
@@ -229,6 +186,54 @@
                     $.each(data.result, function (key, val) {
                         $('#popularSkill').append(
                             `<a href="<?= base_url('posts/'); ?>${val.slug}" class="badge bg-primary-subtle text-primary border border-primary">${val.name}</a>`
+                        );
+                    })
+                }
+                if(data.status == false){
+
+                }
+            },
+            complete: function () {
+
+            }
+        });
+    }
+
+    function getSuggestedUser(){
+        $.ajax({
+            url: "<?php echo base_url('suggesteduser'); ?>",
+            method: "POST",
+            data: {},
+            dataType: 'JSON',         
+            beforeSend: function () {
+                for (let i = 0; i < 10; i++) {
+                    $('#suggestedUser').append(
+                        `<div class="list-group-item d-flex align-items-center">
+                            <span class="placeholder rounded-circle bg-secondary me-2" style="width:45px; height:45px;"></span>
+                            <div class="flex-grow-1">
+                                <p class="placeholder-glow mb-1">
+                                    <span class="placeholder col-6 bg-secondary"></span>
+                                </p>
+                                <p class="placeholder-glow mb-0">
+                                    <span class="placeholder col-4 bg-secondary"></span>
+                                </p>
+                            </div>
+                        </div>`
+                    );
+                }
+            },
+            success: function(data){
+                if(data.status == true){
+                    $('#suggestedUser').html('');
+                    $.each(data.result, function (key, val) {
+                        $('#suggestedUser').append(
+                            `<a href="<?= base_url(''); ?>${val.username}" class="list-group-item d-flex align-items-center">
+                                <img src="<?= base_url('uploads/profile/'); ?>${val.image}" class="rounded-circle me-2" alt="User" style="height: 45px; border: 2px solid #E4E7FA;">
+                                <div>
+                                    <strong>${val.name}</strong><br>
+                                    <small class="text-muted">Posts: ${val.no_of_post}</small>
+                                </div>
+                            </a>`
                         );
                     })
                 }
