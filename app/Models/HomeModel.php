@@ -41,7 +41,16 @@ class HomeModel extends Model{
         return $result = $query->getResult();  
     }
 
-    
+    public function getRelatedPost($skill,$postid){
+        $db = \Config\Database::connect();
+        $query = $db->query("SELECT tp.*, tu.username, tu.name, tam.image, ts.name as skill
+        FROM tbl_post as tp
+        LEFT JOIN tbl_skill as ts ON ts.slug = tp.skill_slug
+        INNER JOIN tbl_user as tu ON tu.userid = tp.userid
+        INNER JOIN tbl_about_me as tam ON tam.userid = tu.userid
+        WHERE tp.status=1 AND tp.skill_slug = '$skill' AND tp.id != $postid GROUP BY tp.id");
+        return $result = $query->getResult();  
+    }
 
     public function getSinglePost($postid,$userid){
         $db = \Config\Database::connect();
@@ -168,6 +177,45 @@ class HomeModel extends Model{
         LEFT JOIN tbl_love as tl ON tl.postid = tp.id AND tl.love = 1
         LEFT JOIN tbl_love as tl2 ON tl2.postid = tp.id AND tl2.userid = '$userid'
         WHERE tp.status=1 AND tp.skill_slug='$skill' GROUP BY tp.id");
+        return $result = $query->getResult();  
+    }
+
+    public function getSuggestedUser(){
+        $db = \Config\Database::connect();
+        $query = $db->query("SELECT tu.id, tu.username, tu.name, tam.image, count(tp.id) as no_of_post
+        FROM tbl_user AS tu
+        INNER JOIN tbl_about_me as tam ON tam.userid = tu.userid
+        LEFT JOIN tbl_post as tp ON tp.userid=tu.userid
+        WHERE tu.status = 1 GROUP BY tu.id ORDER BY tu.created_on DESC LIMIT 10");
+        return $result = $query->getResult();  
+    }
+
+    public function getSearchSkill($query){
+        $db = \Config\Database::connect();
+        $query = $db->query("SELECT ts.name, ts.slug, ts.description
+        FROM tbl_skill AS ts
+        WHERE ts.status = 1 AND ts.name LIKE '%{$query}%' LIMIT 10");
+        return $result = $query->getResult();  
+    }
+
+    public function getSearchPost($query){
+        $db = \Config\Database::connect();
+        $query = $db->query("SELECT tp.*, tu.username, tu.name, tam.image, ts.name as skill
+        FROM tbl_post as tp
+        LEFT JOIN tbl_skill as ts ON ts.slug = tp.skill_slug
+        INNER JOIN tbl_user as tu ON tu.userid = tp.userid
+        INNER JOIN tbl_about_me as tam ON tam.userid = tu.userid
+        WHERE tp.status=1 AND tp.content LIKE '%{$query}%' GROUP BY tp.id");
+        return $result = $query->getResult();  
+    }
+
+    public function getSearchPeople($query){
+        $db = \Config\Database::connect();
+        $query = $db->query("SELECT tu.id, tu.username, tu.name, tam.image, count(tp.id) as no_of_post
+        FROM tbl_user AS tu
+        INNER JOIN tbl_about_me as tam ON tam.userid = tu.userid
+        LEFT JOIN tbl_post as tp ON tp.userid=tu.userid
+        WHERE tu.status = 1 AND (tu.name LIKE '%{$query}%' OR tu.email LIKE '%{$query}%')GROUP BY tu.id ORDER BY tu.created_on DESC LIMIT 10");
         return $result = $query->getResult();  
     }
 }

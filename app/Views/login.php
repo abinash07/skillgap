@@ -6,11 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In</title>
     
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
+    <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="assets/img/site.webmanifest">
+    <meta name="theme-color" content="#ffffff">
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Font Awesome for icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="<?= base_url(); ?>assets/css/bootstrap-icons.css" rel="stylesheet">
     
     <style>
     :root {
@@ -211,6 +218,16 @@
         color: var(--error-color);
     }
 
+
+
+    /* .small-alert {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.2;
+        transition: all 0.3s ease;
+    } */
+
     /* Responsive Design */
     @media (max-width: 768px) {
         .login-form-wrapper {
@@ -242,61 +259,44 @@
                 <div class="col-md-6 col-lg-5">
                     <div class="login-form-wrapper">
                         <!-- Header -->
-                        <div class="text-center mb-4">
+                        <div class="text-center mb-3">
                             <h2 class="login-title">Sign In</h2>
                             <p class="login-subtitle">Welcome back! Please enter your details.</p>
                         </div>
 
-                        <!-- Google Login Button -->
-                        <button type="button" class="btn btn-google w-100 mb-4" id="googleLoginBtn">
-                            <i class="fab fa-google me-2"></i>
-                            Continue with Google
+                        <!-- <button type="button" class="btn btn-google w-100 mb-3" id="googleLoginBtn">
+                            <i class="bi bi-google"></i> Continue with Google
                         </button>
-
-                        <!-- Divider -->
-                        <div class="divider-container mb-4">
+                        <div class="divider-container mb-3">
                             <div class="divider">
                                 <span class="divider-text">or</span>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Login Form -->
                         <form id="loginForm" novalidate>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
-                                <input 
-                                    type="email" 
-                                    class="form-control" 
-                                    id="email" 
-                                    name="email"
-                                    placeholder="Enter your email"
-                                    required
-                                >
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
                                 <div class="invalid-feedback" id="emailError"></div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input 
-                                    type="password" 
-                                    class="form-control" 
-                                    id="password" 
-                                    name="password"
-                                    placeholder="Enter your password"
-                                    required
-                                >
+                            <div class="mb-4 position-relative">
+                                <label for="password" class="form-label w-100">Password 
+                                    <span class="float-end"><a href="<?= base_url(); ?>forgot" class="forgot-link">Forgot password?</a></span>
+                                </label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                                    <span class="input-group-text" id="togglePassword" style="cursor: pointer;">
+                                        <i class="bi bi-eye"></i>
+                                    </span>
+                                </div>
                                 <div class="invalid-feedback" id="passwordError"></div>
                             </div>
+                            
 
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="rememberMe">
-                                    <label class="form-check-label" for="rememberMe">
-                                        Remember me
-                                    </label>
-                                </div>
-                                <a href="#" class="forgot-link">Forgot password?</a>
-                            </div>
+
+                            <div id="postAlert" class="mt-2"></div>
 
                             <button type="submit" class="btn btn-primary w-100 mb-4" id="loginButton">
                                 <span class="button-text">Sign In</span>
@@ -306,10 +306,7 @@
 
                         <!-- Sign up link -->
                         <div class="text-center">
-                            <p class="signup-text">
-                                Don't have an account? 
-                                <a href="#" class="signup-link">Sign up for free</a>
-                            </p>
+                            <p class="signup-text">Don't have an account? <a href="<?= base_url(); ?>register" class="signup-link">Sign up for free</a></p>
                         </div>
                     </div>
                 </div>
@@ -320,7 +317,17 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
+
+
 $(document).ready(function () {
+    $("#togglePassword").on("click", function () {
+        const passwordField = $("#password");
+        const icon = $(this).find("i");
+        const isPassword = passwordField.attr("type") === "password";
+        passwordField.attr("type", isPassword ? "text" : "password");
+        icon.toggleClass("bi-eye bi-eye-slash");
+    });
+
     // Handle login form submission
     $("#loginForm").on("submit", function (e) {
         e.preventDefault();
@@ -356,6 +363,7 @@ $(document).ready(function () {
 
         // Disable button & show loader
         const $btn = $("#loginButton");
+        const $alert = $("#postAlert");
         $btn.prop("disabled", true);
         $btn.find(".button-text").text("Signing in...");
         $btn.find(".spinner-border").removeClass("d-none");
@@ -368,7 +376,7 @@ $(document).ready(function () {
 
         // AJAX call
         $.ajax({
-            url: "<?= base_url('loginme'); ?>", // 🔹 Your API endpoint
+            url: "<?= base_url('loginme'); ?>",
             type: "POST",
             data: {username: email, password: password},
             dataType: "json",
@@ -380,6 +388,18 @@ $(document).ready(function () {
                 } else {
                     // ❌ API returned error
                     //alert(response.message || "Invalid credentials");
+
+                    $alert.html(`
+                        <div class="alert alert-danger alert-dismissible fade show small-alert" role="alert">
+                            <i class="bi bi-exclamation-triangle me-1"></i> ${response.message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `);
+                    setTimeout(() => {
+                        $(".alert").fadeTo(500, 0).slideUp(400, function() {
+                            $(this).alert('close');
+                        });
+                    }, 3000);
                 }
             },
             error: function (xhr) {

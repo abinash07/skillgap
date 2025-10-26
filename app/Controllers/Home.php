@@ -47,6 +47,31 @@ class Home extends BaseController{
         return $this->loadView('posts',$data);
     }
 
+    public function search(){
+        $data=[];
+        return $this->loadView('search',$data);
+    }
+
+    public function about_us(){
+        $data=[];
+        return $this->loadView('about',$data);
+    }
+
+    public function contact_us(){
+        $data=[];
+        return $this->loadView('contact',$data);
+    }
+
+    public function term_condition(){
+        $data=[];
+        return $this->loadView('term',$data);
+    }
+
+    public function privacy_policy(){
+        $data=[];
+        return $this->loadView('privacy',$data);
+    }
+
     public function myaccount(){
         $data=[];
         $userid = session()->get('userid');
@@ -206,11 +231,43 @@ class Home extends BaseController{
                 'username' => $result->username,
                 'content' => $result->content,
                 'skill' => $result->skill,
+                'skill_slug' => $result->skill_slug,
                 'time' => $this->timeAgo($result->created_on),
                 'love' => $result->love,
                 'is_loved' => $result->is_loved,
             );
 
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'Record found',
+                'result' => $response
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Record not found'
+            ]);
+        }
+    }
+
+    public function get_related_post(){
+        $skill = $this->request->getPost('skill');
+        $postid = $this->request->getPost('postid');
+        $result = $this->HomeModel->getRelatedPost($skill,$postid);
+
+        $response = [];
+        foreach($result as $k => $v){
+            $response[$k]['id'] = $v->id;
+            $response[$k]['image'] = $v->image;
+            $response[$k]['name'] = $v->name;
+            $response[$k]['username'] = $v->username;
+            $content = strip_tags($v->content);
+            $response[$k]['content'] = substr($content,0,300);
+            $response[$k]['skill'] = $v->skill;
+            $response[$k]['time'] = $this->timeAgo($v->created_on);
+        }
+
+        if ($result) {
             return $this->response->setJSON([
                 'status'  => true,
                 'message' => 'Record found',
@@ -653,6 +710,64 @@ class Home extends BaseController{
         }
 
         if ($result) {
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'Record found',
+                'result' => $response
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Record not found'
+            ]);
+        }
+    }
+
+    public function get_suggested_user(){
+        $result = $this->HomeModel->getSuggestedUser();
+        if ($result) {
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'Record found',
+                'result' => $result
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Record not found'
+            ]);
+        }
+    }
+
+    public function search_me(){
+        $query = $this->request->getPost('query');
+        $filter = $this->request->getPost('filter');
+
+        $response = [];
+
+        if($filter == "skills"){
+            $response = $this->HomeModel->getSearchSkill($query);
+        }
+
+        if($filter == "posts"){
+            $result = $this->HomeModel->getSearchPost($query);
+            foreach($result as $k => $v){
+                $response[$k]['id'] = $v->id;
+                $response[$k]['image'] = $v->image;
+                $response[$k]['name'] = $v->name;
+                $response[$k]['username'] = $v->username;
+                $content = strip_tags($v->content);
+                $response[$k]['content'] = substr($content,0,300);
+                $response[$k]['skill'] = $v->skill;
+                $response[$k]['time'] = $this->timeAgo($v->created_on);
+            }
+        }
+
+        if($filter == "people"){
+            $response = $this->HomeModel->getSearchPeople($query);
+        }
+
+        if ($response) {
             return $this->response->setJSON([
                 'status'  => true,
                 'message' => 'Record found',

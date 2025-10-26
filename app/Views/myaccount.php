@@ -98,7 +98,7 @@
                     <div class="profile bg-white" style="padding: 30px 20px;">
                         <img src="<?= base_url('uploads/profile/'); ?><?= $account->image; ?>" alt="Profile" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #E4E7FA;">
                         <h5 class="fw-semibold mb-0"><?= $account->name; ?></h5>
-                        <p class="mb-2 fw-semibold" style="font-size: 14px; cursor: pointer;"><?= $account->username; ?> <i id="shareLink" class="bi bi-share text-primary"></i></p>
+                        <p class="mb-2 fw-semibold" style="font-size: 14px; cursor: pointer;">@<?= $account->username; ?> <i id="shareLink" class="bi bi-share text-primary"></i></p>
 
                         <!-- <button class="btn btn-primary btn-sm mb-3 mt-2" style="font-size: 13px;">Follow</button> -->
                         <button id="followBtn" class="btn btn-primary btn-sm mb-3 mt-2" style="font-size: 13px;"><span id="buttonText"></span></button>
@@ -130,18 +130,22 @@
                                 <i class="bi bi-globe me-2 text-primary"></i>
                                 <a href="https://johndoe.com" target="_blank" class="text-decoration-none">johndoe.com</a>
                             </div> -->
+                            <?php if(!empty( $account->occupation)){ ?>
                             <div class="d-flex align-items-center mb-2">
                                 <i class="bi bi-briefcase-fill me-2 text-primary"></i>
                                 <span><?= $account->occupation; ?></span>
                             </div>
+                            <?php } ?>
                             <!-- <div class="d-flex align-items-center mb-2">
                                 <i class="bi bi-building me-2 text-primary"></i>
                                 <span>Currently at Google</span>
                             </div> -->
+                            <?php if(!empty($account->education)){ ?>
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-mortarboard-fill me-2 text-primary"></i>
                                 <span><?= $account->education; ?></span>
                             </div>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -339,6 +343,7 @@
     var isFollowed = <?php echo $account->is_followed == 1 ? 'true' : 'false'; ?>;
     let buttonText = "<?php echo $account->is_followed == 1 ? 'Following' : 'Follow'; ?>";
     $('#buttonText').html(buttonText);
+
     getMyPost();
     function getMyPost(){
         $.ajax({
@@ -421,7 +426,22 @@
                     })
                 }
                 if(data.status == false){
-
+                    $('#posts').html(
+                        `<div class="text-center py-5 my-4 border rounded-3 bg-light" id="noPostBox">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" width="120" opacity="0.7">
+                                <rect x="20" y="40" width="160" height="90" rx="10" ry="10" fill="#f8f9fa" stroke="#ced4da" stroke-width="2"/>
+                                <path d="M20 60 L60 30 L140 30 L180 60 Z" fill="#e9ecef" stroke="#adb5bd" stroke-width="2"/>
+                                <circle cx="100" cy="95" r="14" fill="#dee2e6"/>
+                                <line x1="100" y1="95" x2="100" y2="83" stroke="#adb5bd" stroke-width="3"/>
+                                <circle cx="100" cy="72" r="2" fill="#adb5bd"/>
+                            </svg>
+                            <h5 class="fw-semibold text-muted mb-2">No posts available</h5>
+                            <p class="text-secondary mb-3">You haven’t shared anything yet. Start by adding your first post!</p>
+                            <a href="<?= base_url('addpost'); ?>" class="btn btn-primary btn-sm px-4">
+                                <i class="bi bi-plus-circle me-1"></i> Add Post
+                            </a>
+                        </div>`
+                    );
                 }
             },
             complete: function () {
@@ -509,12 +529,24 @@
                             </div>
                         `);
                     });
-
-
-
                 }
                 if(data.status == false){
-
+                    $('#skill').html(
+                        `<div class="text-center py-5 my-4 border rounded-3 bg-light" id="noPostBox">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" width="120" opacity="0.7">
+                                <rect x="20" y="40" width="160" height="90" rx="10" ry="10" fill="#f8f9fa" stroke="#ced4da" stroke-width="2"/>
+                                <path d="M20 60 L60 30 L140 30 L180 60 Z" fill="#e9ecef" stroke="#adb5bd" stroke-width="2"/>
+                                <circle cx="100" cy="95" r="14" fill="#dee2e6"/>
+                                <line x1="100" y1="95" x2="100" y2="83" stroke="#adb5bd" stroke-width="3"/>
+                                <circle cx="100" cy="72" r="2" fill="#adb5bd"/>
+                            </svg>
+                            <h5 class="fw-semibold text-muted mb-2">No skills yet</h5>
+                            <p class="text-secondary mb-3">You haven’t shared anything yet. Start by adding your first skill!</p>
+                            <a href="<?= base_url('addskill'); ?>" class="btn btn-primary btn-sm px-4">
+                                <i class="bi bi-plus-circle me-1"></i> Add Skill
+                            </a>
+                        </div>`
+                    );
                 }
             },
             complete: function () {

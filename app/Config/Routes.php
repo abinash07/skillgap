@@ -10,6 +10,12 @@ $routes->get('/home', 'Home::index');
 $routes->get('/login', 'Auth::login');
 $routes->post('/loginme','Auth::loginme');
 $routes->get('/logout','Auth::logout');
+$routes->get('/register', 'Auth::register');
+$routes->post('/registerme','Auth::registerme');
+$routes->get('/forgot', 'Auth::forgot_password');
+$routes->post('/forgotpassword', 'Auth::forgot_password_me');
+$routes->get('/reset', 'Auth::reset_password');
+$routes->post('/resetpassword', 'Auth::reset_password_me');
 
 $routes->get('/addskill', 'Home::add_skill');
 $routes->post('/insertskill', 'Home::insert_skill');
@@ -22,7 +28,10 @@ $routes->post('/updateaccount', 'Home::update_account');
 $routes->post('/change_password', 'Home::reset_user_password');
 $routes->post('/getpost', 'Home::get_post');
 $routes->post('/getsinglepost', 'Home::get_single_post');
-
+$routes->post('/relatedpost', 'Home::get_related_post');
+$routes->post('/suggesteduser', 'Home::get_suggested_user');
+$routes->get('/search', 'Home::search');
+$routes->post('/searchme', 'Home::search_me');
 
 $routes->post('/getpopularskill', 'Home::get_popular_skill');
 $routes->get('/postdetails/(:any)', 'Home::post_details/$1');
@@ -36,6 +45,12 @@ $routes->post('/getuserskill', 'Home::get_user_skill');
 $routes->post('/insertlove', 'Home::insert_love');
 $routes->post('/insertfollow', 'Home::insert_follow');
 $routes->post('/insertmyfollow', 'Home::insert_my_follow');
+
+$routes->get('/aboutus', 'Home::about_us');
+$routes->get('/contactus', 'Home::contact_us');
+$routes->get('/terms', 'Home::term_condition');
+$routes->get('/privacy', 'Home::privacy_policy');
+
 
 $routes->get('(:any)', 'Home::profile/$1');
 
