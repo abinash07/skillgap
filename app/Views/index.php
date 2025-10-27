@@ -65,13 +65,14 @@
         return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
     }
 
-    
+
+
     getPost();
     function getPost(){
         $.ajax({
             url: "<?php echo base_url('getpost'); ?>",
             method: "POST",
-            data: {},
+            data: {skip: 0, top: 10},
             dataType: 'JSON',         
             beforeSend: function () {
                 for (let i = 0; i < 10; i++) {
@@ -109,7 +110,7 @@
                 }
             },
             success: function(data){
-                if(data.status == true){
+                if (data.status === true && data.result.length > 0) {
                     $('#posts').html('');
                     $.each(data.result, function (key, val) {
                         let heartClass = val.is_loved == 1 ? 'bi-heart-fill text-danger' : 'bi-heart';
@@ -145,11 +146,10 @@
                                 </div>
                             </div>
                         `);
-
                     })
                 }
                 if(data.status == false){
-
+                    allLoaded = true;
                 }
             },
             complete: function () {

@@ -32,6 +32,9 @@ $routes->post('/relatedpost', 'Home::get_related_post');
 $routes->post('/suggesteduser', 'Home::get_suggested_user');
 $routes->get('/search', 'Home::search');
 $routes->post('/searchme', 'Home::search_me');
+$routes->post('/insertcontactmessage', 'Home::insert_contact_message');
+$routes->get('/settings', 'Home::setting');
+
 
 $routes->post('/getpopularskill', 'Home::get_popular_skill');
 $routes->get('/postdetails/(:any)', 'Home::post_details/$1');

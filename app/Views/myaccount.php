@@ -102,7 +102,7 @@
 
                         <!-- <button class="btn btn-primary btn-sm mb-3 mt-2" style="font-size: 13px;">Follow</button> -->
                         <button id="followBtn" class="btn btn-primary btn-sm mb-3 mt-2" style="font-size: 13px;"><span id="buttonText"></span></button>
-                        <button class="btn btn-primary btn-sm mb-3 mt-2" style="font-size: 13px;"><i class="bi bi-gear-fill"></i></button>
+                        <a href="<?= base_url(); ?>settings" class="btn btn-primary btn-sm mb-3 mt-2" style="font-size: 13px;"><i class="bi bi-gear-fill"></i></a>
 
                         <p id="bio"><?= $account->bio; ?></p>
 
