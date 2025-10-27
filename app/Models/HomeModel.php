@@ -28,7 +28,7 @@ class HomeModel extends Model{
         return $result = $query->getRow();
     }
 
-    public function getPost($userid){
+    public function getPost($userid,$skip,$top){
         $db = \Config\Database::connect();
         $query = $db->query("SELECT tp.*, tu.username, tu.name, tam.image, ts.name as skill, count(tl.id) as love, CASE WHEN tl2.id IS NOT NULL AND tl2.love = 1 THEN 1 ELSE 0 END as is_loved
         FROM tbl_post as tp
@@ -37,7 +37,7 @@ class HomeModel extends Model{
         INNER JOIN tbl_about_me as tam ON tam.userid = tu.userid
         LEFT JOIN tbl_love as tl ON tl.postid = tp.id AND tl.love = 1
         LEFT JOIN tbl_love as tl2 ON tl2.postid = tp.id AND tl2.userid = '$userid'
-        WHERE tp.status=1 GROUP BY tp.id");
+        WHERE tp.status=1 GROUP BY tp.id LIMIT $skip, $top");
         return $result = $query->getResult();  
     }
 

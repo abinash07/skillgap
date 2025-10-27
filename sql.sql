@@ -15,3 +15,6 @@ CREATE TABLE `tbl_love` (`id` INT NOT NULL AUTO_INCREMENT , `userid` VARCHAR(255
 CREATE TABLE `tbl_follow` (`id` INT NOT NULL AUTO_INCREMENT , `follower_id` VARCHAR(255) NOT NULL , `following_id` VARCHAR(255) NOT NULL , `follow` INT NOT NULL , `status` INT NOT NULL , `created_by` INT NOT NULL , `created_on` BIGINT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 ALTER TABLE `tbl_post`
   DROP `skillid`;
+
+
+CREATE TABLE `skillgap`.`tbl_contact_us` (`id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `email` VARCHAR(255) NOT NULL , `subject` VARCHAR(255) NOT NULL , `message` LONGTEXT NOT NULL , `created_on` BIGINT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;

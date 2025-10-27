@@ -85,6 +85,14 @@ class Home extends BaseController{
         return $this->loadView('profile',$data);
     }
 
+    public function setting(){
+        $data=[];
+        $userid = session()->get('userid');
+        $data['account'] = $this->HomeModel->getAccountDetails($userid);
+        return $this->loadView('setting',$data);
+    }
+    
+
 
     function createSlug($productName) {
         $slug = strtolower($productName);
@@ -101,7 +109,7 @@ class Home extends BaseController{
         ## ✅ Validation Rules
         $validationRules = [
             'name' => 'required|trim',
-            'url'   => 'required|trim',
+            'url'   => 'trim',
             'description'   => 'required|trim',
             'level' => 'required|trim'
         ];
@@ -164,7 +172,7 @@ class Home extends BaseController{
         ## ✅ Fetch Data from POST Request
         $data = [
             'userid'            => session()->get('userid'),
-            'skill_slug'           => $this->request->getPost('skillid'),
+            'skill_slug'        => $this->request->getPost('skillid'),
             'content'           => $this->request->getPost('content'),
             'status'            => 1,
             'created_by'        => session()->get('id'),
@@ -188,7 +196,9 @@ class Home extends BaseController{
 
     public function get_post(){
         $userid = session()->get('userid');
-        $result = $this->HomeModel->getPost($userid);
+        $skip = $this->request->getPost('skip');
+        $top = $this->request->getPost('top');
+        $result = $this->HomeModel->getPost($userid,$skip,$top);
 
         $response = [];
         foreach($result as $k => $v){
@@ -305,8 +315,8 @@ class Home extends BaseController{
             'name' => 'required|trim',
             'email'   => 'required|trim',
             'bio'   => 'required|trim',
-            'occupation' => 'required|trim',
-            'education' => 'required|trim'
+            'occupation' => 'trim',
+            'education' => 'trim'
         ];
 
         ## ✅ Validate Input
@@ -777,6 +787,50 @@ class Home extends BaseController{
             return $this->response->setJSON([
                 'status'  => false,
                 'message' => 'Record not found'
+            ]);
+        }
+    }
+
+    public function insert_contact_message(){
+        $session = session();
+        
+        ## ✅ Validation Rules
+        $validationRules = [
+            'name' => 'required|trim',
+            'email'   => 'required|trim',
+            'subject'   => 'required|trim',
+            'message' => 'required|trim'
+        ];
+
+        ## ✅ Validate Input
+        if (!$this->validate($validationRules)) {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => '*** Please fill the form correctly',
+                'errors'  => $this->validator->getErrors()
+            ]);
+        }
+
+        ## ✅ Fetch Data from POST Request
+        $data = [
+            'name'              => $this->request->getPost('name'),
+            'email'             => $this->request->getPost('email'),
+            'subject'           => $this->request->getPost('subject'),
+            'message'           => $this->request->getPost('message'),
+            'created_on'        => time() + 12600,
+        ];
+
+        ## ✅ Insert into Database
+        $result = $this->CommonModel->add_record('tbl_contact_us',$data);
+        if($result){
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'Thank you for reaching out! Our team will get in touch with you shortly.'
+            ]);
+        }else{
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Something error, Try after sometime!'
             ]);
         }
     }

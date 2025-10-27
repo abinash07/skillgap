@@ -19,6 +19,7 @@
                                     <div class="invalid-feedback">Please select a skill.</div>
                                 </div>
                                 <div class="mb-3">
+                                    <label for="content" class="form-label fw-semibold">Content <span class="text-danger">*</span></label>
                                     <textarea name="content" id="content" class="form-control" placeholder="Share your thoughts, skills, or updates..." required></textarea>
                                     <div class="invalid-feedback">Please enter some text.</div>
                                 </div>
@@ -49,6 +50,7 @@
                 ['color', ['color']],
                 ['para', ['ul', 'ol', 'paragraph']],
                 ['height', ['height']],
+                ['insert', ['link']]
 
             ]
         });
