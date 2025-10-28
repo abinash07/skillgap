@@ -54,7 +54,7 @@ class AuthModel extends Model{
 
     public function check_token($token){
 		$query = $this->db->query("SELECT token from tbl_user where token = '$token'");
-		return $query->numRow();
+		return $query->getNumRows();
 	}
 
     public function updateRecord(string $columnName, $columnValue, string $table, array $data): bool{

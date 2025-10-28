@@ -89,6 +89,15 @@ class Home extends BaseController{
         $data=[];
         $userid = session()->get('userid');
         $data['account'] = $this->HomeModel->getAccountDetails($userid);
+
+        $columnArray = ['*'];
+        $where_conditions = array('userid' => $userid);
+        $data['setting'] = $this->CommonModel->row_any_record_where($columnArray,'tbl_setting',$where_conditions);
+
+        // echo '<pre>';
+        // print_r($data);
+        // exit;
+
         return $this->loadView('setting',$data);
     }
     
@@ -826,6 +835,138 @@ class Home extends BaseController{
             return $this->response->setJSON([
                 'status'  => true,
                 'message' => 'Thank you for reaching out! Our team will get in touch with you shortly.'
+            ]);
+        }else{
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Something error, Try after sometime!'
+            ]);
+        }
+    }
+
+    public function update_account_me(){
+        $session = session();
+        
+        ## ✅ Validation Rules
+        $validationRules = [
+            'name' => 'required|trim',
+            'email'   => 'required|trim',
+            'username'   => 'required|trim'
+        ];
+
+        ## ✅ Validate Input
+        if (!$this->validate($validationRules)) {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => '*** Please fill the form correctly',
+                'errors'  => $this->validator->getErrors()
+            ]);
+        }
+
+        $userid = session()->get('userid');
+        $name = $this->request->getPost('name');
+        $email = $this->request->getPost('email');
+        $username = $this->request->getPost('username');
+
+        $check_email = $this->HomeModel->checkUser('email',$email,$userid);
+        if($check_email){
+            return $this->response->setJSON(['status' => false, 'message' => 'Email already registered.']);
+            exit;
+        }
+
+        $check_username = $this->HomeModel->checkUser('username',$username,$userid);
+        if($check_username){
+            return $this->response->setJSON(['status' => false, 'message' => 'Username already registered.']);
+            exit;
+        }
+
+        $data = [
+            'name'       => $name,
+            'email'      => $email,
+            'username'   => $username
+        ];
+        $result = $this->CommonModel->updateRecord('userid',$userid,'tbl_user',$data);
+        if($result){
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'You have successfully added new skill'
+            ]);
+        }else{
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Something error, Try after sometime!'
+            ]);
+        }
+    }
+
+    public function update_notification_setting(){
+        $userid = session()->get('userid');
+        $notifComments = $this->request->getPost('notifComments');
+        $notiflikes = $this->request->getPost('notiflikes');
+        $notifMonthly = $this->request->getPost('notifMonthly');
+        $notifUpdates = $this->request->getPost('notifUpdates');
+
+        $check_setting = $this->HomeModel->checkUserSetting($userid);
+        if($check_setting){
+            $data = [
+                'userid'        => $userid,
+                'notif_comment' => $notifComments,
+                'notif_like'   => $notiflikes,
+                'notif_monthly' => $notifMonthly,
+                'notif_update'  => $notifUpdates,
+                'status'        => 1,
+                'created_by'    => session()->get('id'),
+                'created_on'    => time() + 12600,
+            ];
+            $result = $this->CommonModel->add_record('tbl_setting',$data);
+        }else{
+            $data = [
+                'notif_comment' => $notifComments,
+                'notif_like'   => $notiflikes,
+                'notif_monthly' => $notifMonthly,
+                'notif_update'  => $notifUpdates,
+            ];
+            $result = $this->CommonModel->updateRecord('userid',$userid,'tbl_setting',$data);
+        }
+        if($result){
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'You have successfully added new post'
+            ]);
+        }else{
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Something error, Try after sometime!'
+            ]);
+        }
+    }
+
+    public function update_privacy_setting(){
+        $userid = session()->get('userid');
+
+
+        $check_setting = $this->HomeModel->checkUserSetting($userid);
+        if($check_setting){
+            $data = [
+                'profile_visibility' => $this->request->getPost('profileVisibility'),
+                'profile_indexing'   => $this->request->getPost('profileIndexing'),
+            ];
+            $result = $this->CommonModel->updateRecord('userid',$userid,'tbl_setting',$data);
+        }else{
+            $data = [
+                'userid'             => $userid,
+                'profile_visibility' => $this->request->getPost('profileVisibility'),
+                'profile_indexing'   => $this->request->getPost('profileIndexing'),
+                'status'             => 1,
+                'created_by'         => session()->get('id'),
+                'created_on'         => time() + 12600,
+            ];
+            $result = $this->CommonModel->add_record('tbl_setting',$data);
+        }
+        if($result){
+            return $this->response->setJSON([
+                'status'  => true,
+                'message' => 'You have successfully added new post'
             ]);
         }else{
             return $this->response->setJSON([
