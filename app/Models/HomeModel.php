@@ -177,7 +177,7 @@ class HomeModel extends Model{
         LEFT JOIN tbl_love as tl ON tl.postid = tp.id AND tl.love = 1
         LEFT JOIN tbl_love as tl2 ON tl2.postid = tp.id AND tl2.userid = '$userid'
         WHERE tp.status=1 AND tp.skill_slug='$skill' GROUP BY tp.id");
-        return $result = $query->getResult();  
+        return $result = $query->getResult();
     }
 
     public function getSuggestedUser(){
@@ -217,5 +217,21 @@ class HomeModel extends Model{
         LEFT JOIN tbl_post as tp ON tp.userid=tu.userid
         WHERE tu.status = 1 AND (tu.name LIKE '%{$query}%' OR tu.email LIKE '%{$query}%')GROUP BY tu.id ORDER BY tu.created_on DESC LIMIT 10");
         return $result = $query->getResult();  
+    }
+
+    public function checkUser($column,$value,$userid){
+        $db = \Config\Database::connect();
+        $query = $db->query("SELECT * FROM tbl_user WHERE $column = '$value' AND userid != '$userid'");
+		return $query->getNumRows();
+    }
+
+    public function checkUserSetting($userid){
+        $db = \Config\Database::connect();
+        $query = $db->query("SELECT * FROM tbl_user WHERE userid != '$userid'");
+
+        // $db = \Config\Database::connect();
+        // echo $db->getLastQuery();
+
+		return $query->getNumRows();
     }
 }

@@ -34,6 +34,10 @@ $routes->get('/search', 'Home::search');
 $routes->post('/searchme', 'Home::search_me');
 $routes->post('/insertcontactmessage', 'Home::insert_contact_message');
 $routes->get('/settings', 'Home::setting');
+$routes->post('/updateaccountme', 'Home::update_account_me');
+$routes->post('/updatenotification', 'Home::update_notification_setting');
+$routes->post('/updateprivacy', 'Home::update_privacy_setting');
+
 
 
 $routes->post('/getpopularskill', 'Home::get_popular_skill');
