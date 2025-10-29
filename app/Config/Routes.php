@@ -9,6 +9,9 @@ $routes->get('/', 'Home::index');
 $routes->get('/home', 'Home::index');
 $routes->get('/login', 'Auth::login');
 $routes->post('/loginme','Auth::loginme');
+$routes->get('/glogin', 'Auth::gLogin');
+$routes->get('/googlelogin', 'Auth::googleLogin');
+
 $routes->get('/logout','Auth::logout');
 $routes->get('/register', 'Auth::register');
 $routes->post('/registerme','Auth::registerme');
