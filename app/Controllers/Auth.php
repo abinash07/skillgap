@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 use App\Models\AuthModel;
+use Google\Client as GoogleClient;
+use Google\Service\Oauth2;
 
 class Auth extends BaseController{
 
@@ -76,6 +78,106 @@ class Auth extends BaseController{
             return $this->response->setJSON(['status' => false, 'message' => 'Invialid email or password']);
         }
     }
+
+    public function gLogin(){
+        $client = new GoogleClient();
+        $client->setClientId('GOOGLE_CLIENT_ID');
+        $client->setClientSecret('GOOGLE_CLIENT_SECRET');
+        $client->setRedirectUri(base_url('googlelogin'));
+        $client->addScope('email');
+        $client->addScope('profile');
+        return redirect()->to($client->createAuthUrl());
+    }
+
+
+    public function googleLogin(){
+        $this->session = session();
+        $authModel = new AuthModel();
+        $client = new GoogleClient();
+        $client->setClientId('GOOGLE_CLIENT_ID');
+        $client->setClientSecret('GOOGLE_CLIENT_SECRET');
+        $client->setRedirectUri(base_url('googlelogin'));
+
+        if ($code = $this->request->getGet('code')) {
+            $token = $client->fetchAccessTokenWithAuthCode($code);
+            $client->setAccessToken($token['access_token']);
+
+            $oauth2 = new Oauth2($client);
+            $googleUser = $oauth2->userinfo->get();
+            $name = $googleUser->name;
+            $email = $googleUser->email;
+            $password = "Password#123";
+
+            // echo '<pre>';
+            // print_r($googleUser);
+            // exit;
+
+            $email_check = $authModel->checkEmail($email);
+            if($email_check){
+                $user_data = $authModel->getUserData($email);
+                $user_data = (object) $user_data;
+                $userSessionData = [
+                    'id' => $user_data->id,
+                    'name' => $user_data->name,
+                    'username' => $user_data->username,
+                    'userid' => $user_data->userid,
+                    'email' => $user_data->email,
+                    'image' => $user_data->image,
+                    'isLoggedIn' => TRUE
+                ];
+                $this->session->set($userSessionData);
+                return redirect()->to('');
+            }else{
+                $result5 = $authModel->get_last_id();
+                $firstname = strtok($name, " ");
+                $username = $firstname.$result5->id;
+                $userid = uniqid().$result5->id;
+                $refferid = "SK".date("Y").$result5->id;
+                $auth_key = $this->generate_key($email,'123456');
+
+                $userData = [
+                    'userid'        => $userid,
+                    'username'      => $username,
+                    'name'          => $name,
+                    'email'         => $email,
+                    'phone'         => $email,
+                    'reffer'        => 'SKILLKR',
+                    'reffer_id'     => $refferid,
+                    'userlink'      => $password,
+                    'password'      => password_hash($password, PASSWORD_DEFAULT),
+                    'token'         => bin2hex(random_bytes(35)),
+                    'auth_key'      => $auth_key,
+                    'auth_key_time' => time(),
+                    'status'        => 1,
+                    'created_on'    => time(),
+                ];
+                $result = $authModel->insert_record($userData);
+
+                if ($result) {
+                    $userSessionData = [
+                        'id' => $result,
+                        'name' => $name,
+                        'username' => $username,
+                        'userid' => $userid,
+                        'email' => $email,
+                        'image' => $result->image,
+                        'isLoggedIn' => TRUE
+                    ];
+                    $this->session->set($userSessionData);
+
+                    return redirect()->to('');
+                } else {
+                    return redirect()->to('/login')->with('error', 'Google login failed.');
+                }
+            }
+
+        }else{
+            return redirect()->to('/login')->with('error', 'Google login failed.');
+        }
+    }
+
+
+
 
     public function registerme(){
         $this->session = session();

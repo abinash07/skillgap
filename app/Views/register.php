@@ -26,6 +26,17 @@
             --background: #f8f9fa;
             --radius: 0.375rem;
             --shadow-lg: 0 0.5rem 1rem rgba(0,0,0,0.15);
+
+ 
+            --google-color: #4285f4;
+            --google-hover: #3367d6;
+
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+
+            --shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+
         }
         body {
             background: var(--background);
@@ -91,6 +102,64 @@
             line-height: 1.2;
             transition: all 0.3s ease; */
         }
+
+        
+        /* Google Button */
+        .btn-google {
+            background-color: var(--surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: var(--radius);
+            padding: 0.75rem;
+            font-weight: 500;
+            transition: all 0.15s ease-in-out;
+        }
+
+        .btn-google:hover {
+            background-color: var(--google-color);
+            border-color: var(--google-color);
+            color: white;
+        }
+
+        .btn-google .fab {
+            color: var(--google-color);
+        }
+
+        .btn-google:hover .fab {
+            color: white;
+        }
+
+        
+        /* Divider */
+        .divider-container {
+            position: relative;
+            text-align: center;
+        }
+
+        .divider {
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .divider-text {
+            background: var(--surface);
+            padding: 0 1rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            position: relative;
+            z-index: 1;
+        }
+
+
         @media (max-width: 576px) {
             .register-form-wrapper { padding: 1.25rem; margin: 0.75rem; }
         }
@@ -101,6 +170,16 @@
         <h2 class="register-title">Sign Up</h2>
         <p class="register-subtitle">Create your account to get started</p>
         
+        <a href="<?= base_url('/glogin'); ?>" class="btn btn-google w-100 mb-3" id="googleLoginBtn">
+            <img src="assets/img/google-logo.svg" style="margin-bottom: 2px;"> Continue with Google
+        </a>
+
+        <div class="divider-container mb-3">
+            <div class="divider">
+                <span class="divider-text">or</span>
+            </div>
+        </div>
+
         <form id="registerForm" novalidate>
             <div class="mb-3">
                 <label for="fullname" class="form-label">Full Name</label>

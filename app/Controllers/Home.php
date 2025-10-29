@@ -92,7 +92,20 @@ class Home extends BaseController{
 
         $columnArray = ['*'];
         $where_conditions = array('userid' => $userid);
-        $data['setting'] = $this->CommonModel->row_any_record_where($columnArray,'tbl_setting',$where_conditions);
+        $setting_data = $this->CommonModel->row_any_record_where($columnArray,'tbl_setting',$where_conditions);
+        //$data['setting'] = $this->CommonModel->row_any_record_where($columnArray,'tbl_setting',$where_conditions);
+        if(!empty($setting_data) && isset($setting_data)){
+            $data['setting'] = $setting_data;
+        }else{
+            $data['setting'][0] = [
+                'notif_comment' => 0,
+                'notif_like' => 0,
+                'notif_monthly' => 1,
+                'notif_update' => 1,
+                'profile_visibility' => 'public',
+                'profile_indexing' => 1,
+            ];
+        }
 
         // echo '<pre>';
         // print_r($data);

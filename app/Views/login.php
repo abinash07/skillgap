@@ -264,9 +264,10 @@
                             <p class="login-subtitle">Welcome back! Please enter your details.</p>
                         </div>
 
-                        <!-- <button type="button" class="btn btn-google w-100 mb-3" id="googleLoginBtn">
-                            <i class="bi bi-google"></i> Continue with Google
-                        </button>
+                        <a href="<?= base_url('/glogin'); ?>" class="btn btn-google w-100 mb-3" id="googleLoginBtn">
+                            <img src="assets/img/google-logo.svg" style="margin-bottom: 2px;"> Continue with Google
+                        </a>
+
                         <div class="divider-container mb-3">
                             <div class="divider">
                                 <span class="divider-text">or</span>
