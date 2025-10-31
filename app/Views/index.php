@@ -65,53 +65,97 @@
         return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
     }
 
+    var skip = 0;
+    var limit = 2;
+    var allLoaded = false;
+    getPost(skip, limit);
 
+    $(window).data('ajaxready', true).scroll(function(e) {
+        if ($(window).data('ajaxready') == false) return;
+        if ($(window).scrollTop() >= ($(document).height() - $(window).height() - 300)) {
+            $(window).data('ajaxready', false);
 
-    getPost();
-    function getPost(){
+            skip += limit;
+            getPost(skip, limit);
+        }
+    });
+
+    //getPost();
+    function getPost(skip, limit){
         $.ajax({
             url: "<?php echo base_url('getpost'); ?>",
             method: "POST",
-            data: {skip: 0, top: 10},
+            data: {skip: skip, top: limit},
             dataType: 'JSON',         
             beforeSend: function () {
-                for (let i = 0; i < 10; i++) {
-                    $('#posts').append(
-                        `<div class="card mb-3 shadow-sm" id="skillCardSkeleton">
+                // for (let i = 0; i < 10; i++) {
+                //     $('#posts').append(
+                //         `<div class="card mb-3 shadow-sm" id="skillCardSkeleton">
+                //             <div class="card-body">
+                //                 <div class="d-flex align-items-center mb-2">
+                //                 <span class="placeholder rounded-circle me-2" style="height:45px;width:45px;"></span>
+                //                 <div class="w-50">
+                //                     <p class="placeholder-glow mb-1">
+                //                     <span class="placeholder col-6"></span>
+                //                     </p>
+                //                     <p class="placeholder-glow mb-0">
+                //                     <span class="placeholder col-4"></span>
+                //                     </p>
+                //                 </div>
+                //                 </div>
+
+                //                 <p class="placeholder-glow mb-2">
+                //                 <span class="placeholder col-12"></span>
+                //                 <span class="placeholder col-10"></span>
+                //                 <span class="placeholder col-8"></span>
+                //                 </p>
+
+                //                 <div class="d-flex align-items-center justify-content-between">
+                //                 <div class="d-flex gap-3">
+                //                     <span class="placeholder col-1" style="width: 15px;"></span>
+                //                     <span class="placeholder col-1" style="width: 15px;"></span>
+                //                 </div>
+                //                 <span class="placeholder col-2"></span>
+                //                 </div>
+                //             </div>
+                //         </div>`
+                //     );
+                // }
+
+                $('#posts').append(`<div id="loadingSkeletons"></div>`);
+                for (let i = 0; i < 5; i++) {
+                    $('#loadingSkeletons').append(`
+                        <div class="card mb-3 shadow-sm" id="skillCardSkeleton">
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-2">
-                                <span class="placeholder rounded-circle me-2" style="height:45px;width:45px;"></span>
-                                <div class="w-50">
-                                    <p class="placeholder-glow mb-1">
-                                    <span class="placeholder col-6"></span>
-                                    </p>
-                                    <p class="placeholder-glow mb-0">
-                                    <span class="placeholder col-4"></span>
-                                    </p>
+                                    <span class="placeholder rounded-circle me-2" style="height:45px;width:45px;"></span>
+                                    <div class="w-50">
+                                        <p class="placeholder-glow mb-1"><span class="placeholder col-6"></span></p>
+                                        <p class="placeholder-glow mb-0"><span class="placeholder col-4"></span></p>
+                                    </div>
                                 </div>
-                                </div>
-
                                 <p class="placeholder-glow mb-2">
-                                <span class="placeholder col-12"></span>
-                                <span class="placeholder col-10"></span>
-                                <span class="placeholder col-8"></span>
+                                    <span class="placeholder col-12"></span>
+                                    <span class="placeholder col-10"></span>
+                                    <span class="placeholder col-8"></span>
                                 </p>
-
                                 <div class="d-flex align-items-center justify-content-between">
-                                <div class="d-flex gap-3">
-                                    <span class="placeholder col-1" style="width: 15px;"></span>
-                                    <span class="placeholder col-1" style="width: 15px;"></span>
-                                </div>
-                                <span class="placeholder col-2"></span>
+                                    <div class="d-flex gap-3">
+                                        <span class="placeholder col-1" style="width: 15px;"></span>
+                                        <span class="placeholder col-1" style="width: 15px;"></span>
+                                    </div>
+                                    <span class="placeholder col-2"></span>
                                 </div>
                             </div>
-                        </div>`
-                    );
+                        </div>
+                    `);
                 }
+
             },
             success: function(data){
+                $('#loadingSkeletons').remove();
                 if (data.status === true && data.result.length > 0) {
-                    $('#posts').html('');
+                    //$('#posts').html('');
                     $.each(data.result, function (key, val) {
                         let heartClass = val.is_loved == 1 ? 'bi-heart-fill text-danger' : 'bi-heart';
                         let likedData = val.is_loved == 1 ? true : false;
@@ -147,13 +191,14 @@
                             </div>
                         `);
                     })
+                    $(window).data('ajaxready', true);
                 }
                 if(data.status == false){
-                    allLoaded = true;
+                    $('#posts').append('<div class="text-center text-muted my-3">No more posts to load.</div>');
                 }
             },
             complete: function () {
-
+                
             }
         });
     }
