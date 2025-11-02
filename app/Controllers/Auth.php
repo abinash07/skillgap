@@ -24,8 +24,10 @@ class Auth extends BaseController{
         return view('forgotpassword');
     }
 
-    public function reset_password(){
-        return view('resetpassword');
+    public function reset_password($token){
+        $data = [];
+        $data['token'] = $token;
+        return view('resetpassword',$data);
     }
 
     public function loginme(){
@@ -233,6 +235,7 @@ class Auth extends BaseController{
                 'username' => $username,
                 'userid' => $userid,
                 'email' => $email,
+                'image' => 'noimg.png',
                 'isLoggedIn' => TRUE
             ];
             $this->session->set($userData);
@@ -252,13 +255,16 @@ class Auth extends BaseController{
 
     public function forgot_password_me(){
         helper('sk');
+        $authModel = new AuthModel();
         $email = $this->request->getPost('email');
 
         $email_check = $authModel->checkEmail($email);
         if ($email_check) {
-            $result = $authModel->getUserData($username, $password);
+            $result = $authModel->getUserData($email);
             $result = (object) $result;
             $token = $result->token;
+            $name = $result->name;
+            $resetlink = base_url().'reset/'.$token;
 
             $to = $email;
             $subject = 'Forgot Password';
@@ -328,22 +334,22 @@ class Auth extends BaseController{
                     </div>
 
                     <div class="content">
-                    <p>Hi <strong><?= esc($name) ?></strong>,</p>
+                    <p>Hi <strong>'. $name .'</strong>,</p>
 
                     <p>We received a request to reset your password. Click the button below to reset it:</p>
 
                     <p style="text-align:center;">
-                        <a href="<?= esc($resetLink) ?>" class="btn" target="_blank">Reset Password</a>
+                        <a href="'. $resetlink .'" class="btn" target="_blank">Reset Password</a>
                     </p>
 
                     <p>If you didn’t request this, please ignore this email. The link will expire in <strong>1 hour</strong>.</p>
 
-                    <p>Thanks,<br><strong>The SkillGap Team</strong></p>
+                    <p>Thanks,<br><strong>The Skillkr Team</strong></p>
                     </div>
 
                     <div class="footer">
-                    &copy; <?= date("Y") ?> SkillGap. All rights reserved.<br>
-                    <a href="<?= base_url() ?>" style="color:#6c63ff; text-decoration:none;">Visit Website</a>
+                    &copy; '. date("Y") .' Skillkr. All rights reserved.<br>
+                    <a href="'. base_url() .'" style="color:#6c63ff; text-decoration:none;">Visit Website</a>
                     </div>
                 </div>
                 </body>
@@ -361,6 +367,7 @@ class Auth extends BaseController{
     }
 
     public function reset_password_me(){
+        $authModel = new AuthModel();
         $token = $this->request->getPost('token');
         $password = $this->request->getPost('password');
 

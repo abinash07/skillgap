@@ -70,7 +70,7 @@ class HomeModel extends Model{
         $query = $db->query("SELECT ts.id, ts.name, ts.slug, COUNT(tp.id) AS no_of_post
         FROM tbl_skill AS ts
         LEFT JOIN tbl_post AS tp ON tp.skill_slug = ts.slug
-        WHERE ts.status = 1 GROUP BY ts.id ORDER BY no_of_post DESC LIMIT 10");
+        WHERE ts.status = 1 GROUP BY ts.slug, ts.name ORDER BY no_of_post DESC LIMIT 10");
         return $result = $query->getResult();  
     }
 
@@ -232,6 +232,12 @@ class HomeModel extends Model{
         // $db = \Config\Database::connect();
         // echo $db->getLastQuery();
 
+		return $query->getNumRows();
+    }
+
+    public function checkUserSkill($userid){
+        $db = \Config\Database::connect();
+        $query = $db->query("SELECT id FROM tbl_skill WHERE userid = '$userid'");
 		return $query->getNumRows();
     }
 }

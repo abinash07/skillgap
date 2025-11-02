@@ -17,7 +17,7 @@ $routes->get('/register', 'Auth::register');
 $routes->post('/registerme','Auth::registerme');
 $routes->get('/forgot', 'Auth::forgot_password');
 $routes->post('/forgotpassword', 'Auth::forgot_password_me');
-$routes->get('/reset', 'Auth::reset_password');
+$routes->get('/reset/(:any)', 'Auth::reset_password/$1');
 $routes->post('/resetpassword', 'Auth::reset_password_me');
 
 $routes->get('/addskill', 'Home::add_skill');

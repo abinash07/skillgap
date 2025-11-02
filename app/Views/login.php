@@ -272,7 +272,7 @@
                             <div class="divider">
                                 <span class="divider-text">or</span>
                             </div>
-                        </div> -->
+                        </div> 
 
                         <!-- Login Form -->
                         <form id="loginForm" novalidate>

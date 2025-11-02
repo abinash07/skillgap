@@ -48,15 +48,13 @@
         <div class="share-close" id='closeShare'><i class="fa fa-times"></i></div>
         <p id="share-modal-head">Share</p>
         <div class="sharebox1">
-
             <a href=''><i class="bi bi-share"></i></a>
             <a href="javascript:void(0)" onclick="copyElementText('profilelink')"><i id='copy' class="bi bi-copy"></i></a>
-            <a href=''><i id="facebook" class="bi bi-facebook"></i></a>
-            <a href=''><i id="whatsapp" class="bi bi-whatsapp"></i></a>
-
-            <p id="sharehelptext">Let's people see your skill, Share your profile to rich more people.</p>
+            <a href='' target="_blank"><i id="facebook" class="bi bi-facebook"></i></a>
+            <a href='' target="_blank"><i id="whatsapp" class="bi bi-whatsapp"></i></a>
+            <p id="sharehelptext">Let's people see your skills, Share your profile to rich more people.</p>
         </div>
-        <p id="profilelink" style="display: none;">https://snapkar.com/workinghours.php?username=</p>
+        <p id="profilelink" style="display: none;"></p>
     </div>
 </div>
 
@@ -359,4 +357,15 @@
             $(".share-modal").css("display", "none");
         }
     });
+
+    function copyElementText(id){
+        var text = document.getElementById(id).innerText;
+        var elem = document.createElement("textarea");
+        document.body.appendChild(elem);
+        elem.value = text;
+        elem.select();
+        document.execCommand("copy");
+        document.body.removeChild(elem);
+        $('#share-modal-head').html('**Link Copied!!');
+    }
 </script>

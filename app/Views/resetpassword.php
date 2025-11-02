@@ -127,8 +127,9 @@
                     <span class="input-group-text" id="togglePassword" style="cursor:pointer;">
                         <i class="bi bi-eye"></i>
                     </span>
+                    <div class="invalid-feedback" id="passwordError"></div>
                 </div>
-                <div class="invalid-feedback" id="passwordError"></div>
+                
             </div>
 
             <div class="mb-3 position-relative">
@@ -138,8 +139,9 @@
                     <span class="input-group-text" id="toggleConfirmPassword" style="cursor:pointer;">
                         <i class="bi bi-eye"></i>
                     </span>
+                    <div class="invalid-feedback" id="confirmPasswordError"></div>
                 </div>
-                <div class="invalid-feedback" id="confirmPasswordError"></div>
+                
             </div>
 
             <button type="submit" id="resetButton" class="btn btn-primary w-100">

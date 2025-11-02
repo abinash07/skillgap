@@ -220,8 +220,10 @@ class Home extends BaseController{
         $userid = session()->get('userid');
         $skip = $this->request->getPost('skip');
         $top = $this->request->getPost('top');
-        $result = $this->HomeModel->getPost($userid,$skip,$top);
 
+        //$result2 = $this->HomeModel->checkUserSkill($userid);
+  
+        $result = $this->HomeModel->getPost($userid,$skip,$top);
         $response = [];
         foreach($result as $k => $v){
             $response[$k]['id'] = $v->id;
@@ -235,7 +237,6 @@ class Home extends BaseController{
             $response[$k]['love'] = $v->love;
             $response[$k]['is_loved'] = $v->is_loved;
         }
-
         if ($result) {
             return $this->response->setJSON([
                 'status'  => true,
@@ -248,6 +249,7 @@ class Home extends BaseController{
                 'message' => 'Record not found'
             ]);
         }
+        
     }
 
     public function get_single_post(){

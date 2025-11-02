@@ -11,10 +11,10 @@ if (!function_exists('send_email')) {
         // Default email configuration
         $default_config = [
             'protocol'   => 'smtp',
-            'SMTPHost'   => '94-222.liteserverdns.in',
-            'SMTPPort'   => 465,
-            'SMTPUser'   => 'admin@nfcmycard.com',
-            'SMTPPass'   => 'nfcmycard@2024',
+            'SMTPHost'   => 'smtp.hostinger.com',
+            'SMTPPort'   =>  465,
+            'SMTPUser'   => 'support@skillkr.com',
+            'SMTPPass'   => 'SkillKR@Supp0rt@77',
             'SMTPCrypto' => 'ssl',
             'mailType'   => 'html',
             'charset'    => 'utf-8',
@@ -31,7 +31,7 @@ if (!function_exists('send_email')) {
 
         // Set sender
         $from_email = $from ?: $config['SMTPUser']; // Use default if not provided
-        $email->setFrom($from_email, 'SkillGap'); // You can change the sender name here
+        $email->setFrom($from_email, 'Skillkr'); // You can change the sender name here
 
         // Set recipient, subject, and message
         $email->setTo($to);
